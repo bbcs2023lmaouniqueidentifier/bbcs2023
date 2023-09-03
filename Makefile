@@ -1,4 +1,11 @@
+all : prettier deps
+	@echo "Done"
 
+.PHONY : prettier deps
 
-prettier:
+deps :
+	npm install
+	pip install -r requirements.txt
+
+prettier :
 	npx prettier . --write
