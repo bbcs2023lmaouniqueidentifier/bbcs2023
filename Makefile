@@ -1,0 +1,4 @@
+
+
+prettier:
+	npx prettier . --write
