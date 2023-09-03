@@ -1,5 +1,5 @@
-all : prettier deps
-	@echo "Done"
+all :
+	@echo "Usage: make prettier|deps"
 
 .PHONY : prettier deps
 
