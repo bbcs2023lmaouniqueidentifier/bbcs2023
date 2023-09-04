@@ -11,5 +11,6 @@ prettier :
 	npx prettier . --write
 
 docker-run :
+	docker compose down --rmi all -v
 	docker compose --project-name=bbcs-hackathon build
 	docker compose up -d

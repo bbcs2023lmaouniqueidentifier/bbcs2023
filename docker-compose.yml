@@ -29,10 +29,12 @@ services:
       - BBCS-network
     env_file:
       - .env
+      - .env.local
     ports:
       - ${BACKEND_PORT}:${BACKEND_PORT}
     volumes:
       - ./api:/app/api
+      - ./service:/app/service
     restart: always
 
 networks:
