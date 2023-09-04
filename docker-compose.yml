@@ -1,0 +1,40 @@
+---
+version: '3.8'
+
+services:
+  frontend:
+    container_name: BBCS-frontend
+    build:
+      context: ./
+      dockerfile: frontend.Dockerfile
+    networks:
+      - BBCS-network
+    env_file:
+      - .env
+    ports:
+      - ${FRONTEND_PORT}:${FRONTEND_PORT}
+    depends_on:
+      - backend
+    restart: always
+    volumes:
+      - ./src:/app/src
+      - ./public:/app/public
+
+  backend:
+    container_name: BBCS-backend
+    build:
+      context: ./
+      dockerfile: backend.Dockerfile
+    networks:
+      - BBCS-network
+    env_file:
+      - .env
+    ports:
+      - ${BACKEND_PORT}:${BACKEND_PORT}
+    volumes:
+      - ./api:/app/api
+    restart: always
+
+networks:
+  BBCS-network:
+    driver: bridge
