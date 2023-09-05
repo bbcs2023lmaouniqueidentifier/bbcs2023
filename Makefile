@@ -1,5 +1,5 @@
 all :
-	@echo "Usage: make prettier|deps"
+	@echo "Usage: make prettier|deps|run|docker-run"
 
 .PHONY : prettier deps
 
@@ -14,3 +14,6 @@ docker-run :
 	docker compose down --rmi all -v
 	docker compose --project-name=bbcs-hackathon build
 	docker compose up -d
+
+run :
+	sh run.sh
