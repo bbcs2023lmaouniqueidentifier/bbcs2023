@@ -41,22 +41,46 @@ svg {
 }
 
 .description {
-  font-size: 1rem;
+  font-size: 1.1rem;
 }
 
 .button {
-  font-size: 1rem;
+  font-size: 1.1rem;
 }
 
 @media (max-width: 800px) {
   .page-container {
     --title-size: 2rem;
-    --subtitle-size: 1.2rem;
-    --description-size: 0.75rem;
+    --subtitle-size: 1.4rem;
+    --description-size: 1rem;
   }
 
   .title {
-    font-size: 3rem;
+    font-size: 2rem;
+  }
+
+  .subtitle {
+    font-size: 1.4rem;
+  }
+
+  .description {
+    font-size: 1rem;
+  }
+
+  .button {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 600px) {
+  .page-container {
+    --title-size: 1.5rem;
+    --subtitle-size: 1.2rem;
+    --description-size: 0.9rem;
+  }
+
+  .title {
+    font-size: 1.5rem;
   }
 
   .subtitle {
@@ -64,35 +88,11 @@ svg {
   }
 
   .description {
-    font-size: 0.75rem;
+    font-size: 0.9rem;
   }
 
   .button {
-    font-size: 0.75rem;
-  }
-}
-
-@media (max-width: 600px) {
-  .page-container {
-    --title-size: 1rem;
-    --subtitle-size: 0.7rem;
-    --description-size: 0.5rem;
-  }
-
-  .title {
-    font-size: 1rem;
-  }
-
-  .subtitle {
-    font-size: 0.7rem;
-  }
-
-  .description {
-    font-size: 0.5rem;
-  }
-
-  .button {
-    font-size: 0.5rem;
+    font-size: 0.9rem;
   }
 }
 

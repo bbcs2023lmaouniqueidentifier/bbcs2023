@@ -88,7 +88,6 @@ export const Navbar = forwardRef<HTMLDivElement, JSXProps>((props, ref) => {
                   vertical: 'top',
                   horizontal: 'right',
                 }}
-                disablePortal
               >
                 <Paper className='navbar-mobile-dropdown'>
                   <Button

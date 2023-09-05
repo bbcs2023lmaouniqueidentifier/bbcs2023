@@ -103,7 +103,7 @@ export const LoginPage = () => {
               variant='contained'
               color='primary'
               type='submit'
-              className='submit-button'
+              className='submit-button button'
             >
               Log In
             </Button>

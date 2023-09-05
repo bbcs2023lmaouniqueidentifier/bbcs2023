@@ -121,7 +121,7 @@ export const SignUpPage = () => {
               variant='contained'
               color='primary'
               type='submit'
-              className='submit-button'
+              className='submit-button button'
             >
               Sign Up
             </Button>

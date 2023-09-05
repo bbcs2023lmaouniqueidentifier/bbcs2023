@@ -56,6 +56,7 @@
 .navbar-mobile-dropdown {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 0.4vh;
 }
 
@@ -63,10 +64,12 @@
   text-transform: capitalize;
   padding: 1%;
   color: var(--primary);
+  padding: 2%;
+  text-decoration: none;
 }
 
 /* for some reason if your mobile device supports hover or ur desktop is tiny... */
 .navbar-mobile-dropdown-button:hover {
   border: 1px solid var(--secondary);
-  border-radius: 10px;
+  border-radius: 5px;
 }
