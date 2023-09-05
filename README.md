@@ -23,11 +23,7 @@ make sure you are in the root directory!
 
 ### Non docker:
 
-Open up 2 terminals and run these commands on each terminal:
-
-frontend: `npm run dev`
-
-backend: `flask --app api/index run --host=0.0.0.0 -p 5000 --debug`
+run `make run`
 
 ### Docker:
 
