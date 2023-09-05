@@ -55,10 +55,6 @@ export const ThemeWrapper = ({ children, darkTheme }: ThemeWrapperProps) => {
         '--background-color',
         'rgb(15, 15, 15)',
       );
-      pageContainerRef.current?.style.setProperty(
-        '--sectional-color',
-        '255, 255, 255',
-      );
     } else {
       document.body.style.backgroundColor = 'rgb(255, 255, 255)';
       pageContainerRef.current?.style.setProperty('--primary', 'rgb(0,0,0)');
@@ -74,12 +70,17 @@ export const ThemeWrapper = ({ children, darkTheme }: ThemeWrapperProps) => {
         '--background-color',
         'rgb(255, 255, 255)',
       );
-      pageContainerRef.current?.style.setProperty(
-        '--sectional-color',
-        '128, 128, 128',
-      );
     }
   }, [isDark]);
+
+  useEffect(() => {
+    if (pageContainerRef.current) {
+      pageContainerRef.current.style.setProperty(
+        '--font-scale',
+        theming.fontScale.toString(),
+      );
+    }
+  }, [theming.fontScale]);
 
   useEffect(() => {
     if (navbarRef.current && childrenRef.current) {

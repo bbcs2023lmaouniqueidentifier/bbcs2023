@@ -34,7 +34,7 @@ export const lightThemeOptions: ThemeOptions = {
       main: 'rgb(0, 0, 0)',
     },
     secondary: {
-      main: 'rgb(238, 103, 35)',
+      main: 'rgb(30,144,255)',
     },
   },
   components: {

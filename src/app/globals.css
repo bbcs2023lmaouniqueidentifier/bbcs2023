@@ -20,6 +20,17 @@ svg {
   transition: all 0.2s ease-out;
 }
 
+.page-container {
+  --font-scale: 1;
+  --title-size: calc(3rem * var(--font-scale));
+  --subtitle-size: calc(2rem * var(--font-scale));
+  --description-size: calc(1.1rem * var(--font-scale));
+
+  --raw-title-size: 3rem;
+  --raw-subtitle-size: 2rem;
+  --raw-description-size: 1.1rem;
+}
+
 .emphasis {
   font-weight: bold;
   color: var(--secondary);
@@ -32,67 +43,75 @@ svg {
 
 .title {
   font-weight: 500;
-  font-size: 3rem;
+  font-size: calc(3rem * var(--font-scale));
 }
 
 .subtitle {
   font-weight: 500;
-  font-size: 2rem;
+  font-size: calc(2rem * var(--font-scale));
 }
 
 .description {
-  font-size: 1.1rem;
+  font-size: calc(1.1rem * var(--font-scale));
 }
 
 .button {
-  font-size: 1.1rem;
+  font-size: calc(1.1rem * var(--font-scale));
 }
 
 @media (max-width: 800px) {
   .page-container {
-    --title-size: 2rem;
-    --subtitle-size: 1.4rem;
-    --description-size: 1rem;
+    --title-size: calc(2rem * var(--font-scale));
+    --subtitle-size: calc(1.4rem * var(--font-scale));
+    --description-size: calc(1rem * var(--font-scale));
+
+    --raw-title-size: 2rem;
+    --raw-subtitle-size: 1.4rem;
+    --raw-description-size: 1rem;
   }
 
   .title {
-    font-size: 2rem;
+    font-size: calc(2rem * var(--font-scale));
   }
 
   .subtitle {
-    font-size: 1.4rem;
+    font-size: calc(1.4rem * var(--font-scale));
   }
 
   .description {
-    font-size: 1rem;
+    font-size: calc(1rem * var(--font-scale));
   }
 
   .button {
-    font-size: 1rem;
+    font-size: calc(1rem * var(--font-scale));
   }
 }
 
 @media (max-width: 600px) {
   .page-container {
-    --title-size: 1.5rem;
-    --subtitle-size: 1.2rem;
-    --description-size: 0.9rem;
+    --title-size: calc(1.5rem * var(--font-scale));
+    --subtitle-size: calc(1.2rem * var(--font-scale));
+    --description-size: calc(0.9rem * var(--font-scale));
+
+    --raw-title-size: 1.5rem;
+    --raw-subtitle-size: 1.2rem;
+    --raw-description-size: 0.9rem;
   }
 
   .title {
-    font-size: 1.5rem;
+    font-size: calc(1.5rem * var(--font-scale));
   }
 
   .subtitle {
-    font-size: 1.2rem;
+    font-size: calc(1.2rem * var(--font-scale));
   }
 
   .description {
-    font-size: 0.9rem;
+    font-size: calc(0.9rem * var(--font-scale));
   }
 
   .button {
-    font-size: 0.9rem;
+    font-size: calc(0.9rem * var(--font-scale));
   }
 }
 

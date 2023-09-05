@@ -11,12 +11,17 @@ const MediaQueryContext = createContext({
   },
   theming: {
     darkMode: true,
+    fontScale: 1,
   },
 });
 
 const MediaQueryProvider = ({ children }: { children: ReactNode }) => {
-  const [theming, setTheming] = useState<{ darkMode: boolean }>({
+  const [theming, setTheming] = useState<{
+    darkMode: boolean;
+    fontScale: number;
+  }>({
     darkMode: false,
+    fontScale: 1,
   });
   const breakpoints = {
     mobile: useMediaQuery('(min-width: 600px)'),
@@ -27,12 +32,16 @@ const MediaQueryProvider = ({ children }: { children: ReactNode }) => {
     if (localStorage.getItem('darkmode') === null)
       localStorage.setItem(
         'darkmode',
-        useMediaQuery('(prefers-color-scheme: dark)').toString(),
+        window.matchMedia('(prefers-color-scheme: dark)').matches.toString(),
       );
+    if (localStorage.getItem('fontscale') === null)
+      localStorage.setItem('fontscale', '1');
     const theming = {
       darkMode: localStorage.getItem('darkmode') === 'true',
+      fontScale: Number(localStorage.getItem('fontscale')) || 1,
     };
     setTheming(theming);
+    console.log(theming);
   }, []);
 
   const value = useMemo(
