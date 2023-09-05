@@ -29,11 +29,18 @@
 
 .submit-button {
   aspect-ratio: 3.1618;
-  width: 15vw;
+  width: 12vw;
   text-transform: capitalize;
   color: var(--secondary);
   background-color: transparent;
   outline: 2px solid var(--primary);
+}
+
+@media (max-width: 600px) {
+  .submit-button {
+    aspect-ratio: 7;
+    width: 35vw;
+  }
 }
 
 .submit-button:hover {

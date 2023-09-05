@@ -105,7 +105,7 @@ export const LoginPage = () => {
               type='submit'
               className='submit-button button'
             >
-              Log In
+              <Typography noWrap>Log In</Typography>
             </Button>
           </form>
         </section>

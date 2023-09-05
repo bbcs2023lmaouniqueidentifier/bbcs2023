@@ -123,7 +123,7 @@ export const SignUpPage = () => {
               type='submit'
               className='submit-button button'
             >
-              Sign Up
+              <Typography noWrap>Sign Up</Typography>
             </Button>
           </form>
         </section>
