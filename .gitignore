@@ -35,4 +35,4 @@ yarn-error.log*
 next-env.d.ts
 
 # python
-api/__pycache__/*
+**__pycache__**
