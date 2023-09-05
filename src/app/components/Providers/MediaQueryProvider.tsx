@@ -16,7 +16,7 @@ const MediaQueryContext = createContext({
 
 const MediaQueryProvider = ({ children }: { children: ReactNode }) => {
   const breakpoints = {
-    mobile: useMediaQuery('(max-width: 600px)'),
+    mobile: useMediaQuery('(min-width: 600px)'),
     tablet: useMediaQuery('(max-width: 1000px)'),
     desktop: useMediaQuery('(min-width: 1000px)'),
   };
