@@ -10,8 +10,7 @@ import {
 } from '@mui/material';
 import Link from 'next/link';
 import { forwardRef, useState, useContext, useEffect } from 'react';
-import LightModeIcon from '@mui/icons-material/LightMode';
-import DarkModeIcon from '@mui/icons-material/DarkMode';
+import { useRouter } from 'next/navigation';
 import DensityMediumIcon from '@mui/icons-material/DensityMedium';
 import { MediaQueryContext } from '@/app/components/Providers/MediaQueryProvider';
 import { JSXProps } from '@/app/types';
@@ -23,7 +22,7 @@ export const Navbar = forwardRef<HTMLDivElement, JSXProps>((props, ref) => {
   const { breakpoints, theming } = useContext(MediaQueryContext);
 
   const [isDark, setIsDark] = useState<boolean>(theming.darkMode);
-
+  const router = useRouter();
   useEffect(() => {
     setIsDark(theming.darkMode);
   }, [theming.darkMode]);
@@ -47,7 +46,7 @@ export const Navbar = forwardRef<HTMLDivElement, JSXProps>((props, ref) => {
     <div className={props.className} id={props.id} ref={ref}>
       <AppBar className='navbar' position='fixed'>
         <Toolbar className='navbar-inner'>
-          <div className='navbar-logo' />
+          <div className='navbar-logo' onClick={() => router.push('/  ')} />
 
           {breakpoints.mobile ? (
             <>
@@ -66,7 +65,7 @@ export const Navbar = forwardRef<HTMLDivElement, JSXProps>((props, ref) => {
               <Button
                 className='button navbar-btn'
                 variant='contained'
-                href='/auth/login'
+                onClick={() => router.push('/auth/login')}
               >
                 Login
               </Button>
@@ -108,12 +107,12 @@ export const Navbar = forwardRef<HTMLDivElement, JSXProps>((props, ref) => {
                   >
                     <Typography>MBTI Quiz</Typography>
                   </Button>
-                  <Link
+                  <Button
                     className='navbar-mobile-dropdown-button'
-                    href='/auth/login'
+                    onClick={() => router.push('/auth/login')}
                   >
                     <Typography>Login</Typography>
-                  </Link>
+                  </Button>
                 </Paper>
               </Popover>
             </>

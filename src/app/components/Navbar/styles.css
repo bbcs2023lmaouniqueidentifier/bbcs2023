@@ -14,10 +14,10 @@
 
 .navbar-logo {
   border-radius: 50%;
-  height: 5vh;
+  height: 7vh;
 
   aspect-ratio: 1/1;
-  background-image: url('/pfp.webp');
+  background-image: url('/bbcs_favicon.webp');
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
