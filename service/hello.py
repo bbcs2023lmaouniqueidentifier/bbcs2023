@@ -1,4 +1,4 @@
-import psycopg2
+import psycopg
 import os
 import dotenv
 
@@ -18,13 +18,10 @@ pg_connection_dict = {
 
 
 def hello():
-  connection = psycopg2.connect(**pg_connection_dict)
+  connection = psycopg.connect(**pg_connection_dict)
   cur = connection.cursor()
-  cur.execute("CREATE TABLE test (id serial PRIMARY KEY, num integer, data varchar);")
   cur.execute("INSERT INTO test (num, data) VALUES (%s, %s)", (100, "abc'def"))
   cur.execute("SELECT * FROM test;")
   cur.fetchone()
   connection.commit()
   cur.close()
-
-
