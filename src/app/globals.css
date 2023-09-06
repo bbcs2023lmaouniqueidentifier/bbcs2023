@@ -19,6 +19,9 @@ svg {
 *:not([class*='popper']) {
   transition: all 0.2s ease-out;
 }
+input[type='file']::-webkit-file-upload-button {
+  visibility: hidden;
+}
 
 .page-container {
   --font-scale: 1;
