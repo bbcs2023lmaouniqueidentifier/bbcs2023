@@ -36,6 +36,7 @@ setup_db()
 
 app = Flask(__name__)
 
+
 def get_json():
     if not request.json:
         raise Exception("Invalid format")
@@ -120,9 +121,9 @@ def passwordchange():
         newpwhash = hash(newpasswd + newsalt)
         update(
             cur,
-           "Users",
-           [("UserPwHash", repr(newpwhash)), ("UserPwSalt", repr(newsalt))],
-           f"UserName='{uname}'"
+            "Users",
+            [("UserPwHash", repr(newpwhash)), ("UserPwSalt", repr(newsalt))],
+            f"UserName='{uname}'",
         )
         status = 200
     else:
