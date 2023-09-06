@@ -1,10 +1,11 @@
 from flask import Flask, request, jsonify
+from flask_cors import CORS
 
 import os
 import sys
 
 sys.path.append(os.getcwd())
-from database.boot import db_connector, db_init
+from database.boot import db_connector
 from database.operations import insert_row, select, update, delete
 
 
@@ -19,6 +20,7 @@ hash = lambda x: x
 conn_mk = db_connector("PROD" in os.environ)
 
 app = Flask(__name__)
+CORS(app)
 
 
 def get_json():
