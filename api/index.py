@@ -68,17 +68,23 @@ def signup():
 
     conn = conn_mk()
     cur = conn.cursor()
-    select(cur, "Users", "UserName", f"UserName='{uname}'")
-    if len(cur.fetchall()) == 0:
-        insert_row(
-            cur,
-            "Users",
-            "UserName, UserEmail, UserPwHash, UserPwSalt, UserHours",
-            (uname, email, pwhash, salt(), 0),
-        )
-        status = 200
-    else:
-        status = 409
+    status = 500
+
+    try:
+        select(cur, "Users", "UserName", f"UserName='{uname}'")
+        if len(cur.fetchall()) == 0:
+            insert_row(
+                cur,
+                "Users",
+                "UserName, UserEmail, UserPwHash, UserPwSalt, UserHours",
+                (uname, email, pwhash, salt(), 0),
+            )
+            status = 200
+        else:
+            status = 409
+    except:
+        pass
+
     conn.commit()
     cur.close()
     conn.close()
@@ -98,13 +104,16 @@ def login():
 
     conn = conn_mk()
     cur = conn.cursor()
-    corr_cred = check_password(cur, uname, passwd)
+    status = 500
+
+    try:
+        status = 200 if check_password(cur, uname, passwd) else 401
+    except:
+        pass
     cur.close()
     conn.close()
-    if corr_cred:
-        return jsonify({}), 200
-    else:
-        return jsonify({}), 401
+
+    return jsonify({}), status
 
 
 @app.route("/api/emailchange", methods=["POST"])
@@ -115,12 +124,18 @@ def emailchange():
 
     conn = conn_mk()
     cur = conn.cursor()
-    corr_cred = check_password(cur, uname, passwd)
-    if corr_cred:
-        update(cur, "Users", [("UserEmail", repr(newemail))], f"UserName='{uname}'")
-        status = 200
-    else:
-        status = 401
+
+    status = 500
+    try:
+        corr_cred = check_password(cur, uname, passwd)
+        if corr_cred:
+            update(cur, "Users", [("UserEmail", repr(newemail))], f"UserName='{uname}'")
+            status = 200
+        else:
+            status = 401
+    except:
+        pass
+
     conn.commit()
     cur.close()
     conn.close()
@@ -135,19 +150,25 @@ def passwordchange():
 
     conn = conn_mk()
     cur = conn.cursor()
-    corr_cred = check_password(cur, uname, passwd)
-    if corr_cred:
-        newsalt = salt()
-        newpwhash = hash(newpasswd + newsalt)
-        update(
-            cur,
-            "Users",
-            [("UserPwHash", repr(newpwhash)), ("UserPwSalt", repr(newsalt))],
-            f"UserName='{uname}'",
-        )
-        status = 200
-    else:
-        status = 401
+
+    status = 500
+    try:
+        corr_cred = check_password(cur, uname, passwd)
+        if corr_cred:
+            newsalt = salt()
+            newpwhash = hash(newpasswd + newsalt)
+            update(
+                cur,
+                "Users",
+                [("UserPwHash", repr(newpwhash)), ("UserPwSalt", repr(newsalt))],
+                f"UserName='{uname}'",
+            )
+            status = 200
+        else:
+            status = 401
+    except:
+        pass
+
     conn.commit()
     cur.close()
     conn.close()
@@ -164,17 +185,26 @@ def addopp():
 
     conn = conn_mk()
     cur = conn.cursor()
-    corr_cred = check_password(cur, uname, passwd)
-    if corr_cred:
-        insert_row(
-            cur,
-            "Opportunities",
-            "OpportunityName, OpportunityCreator, OpportunityLogo, OpportunityDesc",
-            (oppname, uname, opplogo, oppdesc),
-        )
-        status = 200
-    else:
-        status = 401
+
+    status = 500
+    try:
+        corr_cred = check_password(cur, uname, passwd)
+        if corr_cred:
+            try:
+                insert_row(
+                    cur,
+                    "Opportunities",
+                    "OpportunityName, OpportunityCreator, OpportunityLogo, OpportunityDesc",
+                    (oppname, uname, opplogo, oppdesc),
+                )
+                status = 200
+            except:
+                status = 409  # probably
+        else:
+            status = 401
+    except:
+        pass
+
     conn.commit()
     cur.close()
     conn.close()
@@ -185,18 +215,27 @@ def addopp():
 def getopps():
     conn = conn_mk()
     cur = conn.cursor()
-    rows = cur.execute(
-        "SELECT OpportunityName, OpportunityCreator, OpportunityLogo, OpportunityDesc FROM Opportunities;"
-    ).fetchall()
-    cols = (
-        "OpportunityName",
-        "OpportunityCreator",
-        "OpportunityLogo",
-        "OpportunityDesc",
-    )
+
+    status = 500
+    ret = {}
+    try:
+        rows = cur.execute(
+            "SELECT OpportunityName, OpportunityCreator, OpportunityLogo, OpportunityDesc FROM Opportunities;"
+        ).fetchall()
+        cols = (
+            "OpportunityName",
+            "OpportunityCreator",
+            "OpportunityLogo",
+            "OpportunityDesc",
+        )
+        ret = list(map(lambda row: {k: v for k, v in zip(cols, row)}, rows))
+        status = 200
+    except:
+        pass
+
     cur.close()
     conn.close()
-    return jsonify(list(map(lambda row: {k: v for k, v in zip(cols, row)}, rows)))
+    return jsonify(ret), status
 
 
 @app.route("/api/assignmbtis", methods=["POST"])
@@ -211,20 +250,20 @@ def assignmbtis():
     select(cur, "Opportunities", "OpportunityCreator", f"OpportunityName='{opp}'")
     creator = cur.fetchone()[0]
 
+    status = 500
     try:
         if creator != uname:
-            raise Exception(403)
+            status = 403
+            raise Exception
         if not check_password(cur, uname, passwd):
             status = 401
-            raise Exception(401)
+            raise Exception
         delete(cur, "MbtiMatch", f"MbtiMatchOName='{opp}'")
         for mbti in mbtis:
             insert_row(cur, "MbtiMatch", "MbtiMatchOName, MbtiCat", (opp, mbti))
-
         status = 200
-    except Exception as e:
-        status = e.args[0]
-        print(status)
+    except:
+        pass
 
     conn.commit()
     cur.close()
@@ -236,13 +275,22 @@ def assignmbtis():
 def leak():
     conn = conn_mk()
     cur = conn.cursor()
-    rows = cur.execute(f"SELECT * FROM {request.args['table']};").fetchall()
-    cols = list(
-        map(
-            lambda l: l[1],
-            cur.execute(f"PRAGMA table_info({request.args['table']});").fetchall(),
+
+    status = 500
+    ret = {}
+    try:
+        rows = cur.execute(f"SELECT * FROM {request.args['table']};").fetchall()
+        cols = list(
+            map(
+                lambda l: l[1],
+                cur.execute(f"PRAGMA table_info({request.args['table']});").fetchall(),
+            )
         )
-    )
+        ret = list(map(lambda row: {k: v for k, v in zip(cols, row)}, rows))
+        status = 200
+    except:
+        pass
+
     cur.close()
     conn.close()
-    return jsonify(list(map(lambda row: {k: v for k, v in zip(cols, row)}, rows)))
+    return jsonify(ret), status
