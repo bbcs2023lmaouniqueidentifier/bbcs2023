@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+from time import time
 
 import os
 import sys
@@ -47,8 +48,8 @@ def signup():
             insert_row(
                 cur,
                 "Users",
-                "UserName, UserEmail, UserPwHash, UserPwSalt, UserHours",
-                (uname, email, pwhash, salt(), 0),
+                "UserName, UserEmail, UserPwHash, UserPwSalt, UserHours, UserHoursUpdate",
+                (uname, email, pwhash, salt(), 0, 0),
             )
             status = 200
         else:
@@ -257,6 +258,63 @@ def fetchmbtis():
         status = 200
     except Exception as e:
         print(e)
+
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify(ret), status
+
+
+@app.route("/api/addhours", methods=["POST"])
+def addhours():
+    uname = get_json()["username"]
+    passwd = get_json()["password"]
+    extrahours = get_json()["extrahours"]
+
+    conn = conn_mk()
+    cur = conn.cursor()
+
+    status = 500
+    try:
+        if not check_password(cur, uname, passwd):
+            status = 401
+            raise Exception
+        select(cur, "Users", "UserHours, UserHoursUpdate", f"UserName='{uname}'")
+        hours, updtime = cur.fetchone()
+        if time() - updtime < 72000:
+            status = 409
+            raise Exception
+        update(
+            cur,
+            "Users",
+            [("UserHours", hours + extrahours), ("UserHoursUpdate", time()) ],
+            f"UserName='{uname}'"
+        )
+        status = 200
+    except:
+        pass
+
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify({}), status
+
+
+@app.route("/api/fetchhours", methods=["GET"])
+def fetchhours():
+    uname = request.args["username"]
+
+    conn = conn_mk()
+    cur = conn.cursor()
+
+    status = 500
+    ret = []
+    try:
+        select(cur, "Users", "UserHours", f"UserName='{uname}'")
+        ret = list(map(lambda t: t[0], cur.fetchall()))
+        status = 200
+    except:
+        pass
 
     conn.commit()
     cur.close()

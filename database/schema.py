@@ -20,6 +20,7 @@ def db_setup_schema(cur):
             ("UserPwHash", "VARCHAR(255)"),
             ("UserPwSalt", "VARCHAR(255)"),
             ("UserHours", "INTEGER"),
+            ("UserHoursUpdate", "INTEGER"),
         ],
         "Opportunities": [
             "OpportunityName",
