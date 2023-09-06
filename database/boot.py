@@ -1,9 +1,6 @@
 import os
 import dotenv
 from database.schema import db_setup_schema
-from database.operations import insert_row
-import psycopg
-import sqlite3
 
 
 # load environment variables from .env file
@@ -22,7 +19,7 @@ def db_uri(prod=0):
 
 
 def db_connector(prod=0):
-    dbmod = psycopg if prod else sqlite3
+    dbmod = __import__("psycopg") if prod else __import__("sqlite3")
     return lambda: dbmod.connect(**db_uri(prod))
 
 

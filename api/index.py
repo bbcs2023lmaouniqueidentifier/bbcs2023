@@ -37,18 +37,17 @@ conn_mk = db_connector(prod)
 
 
 def setup_db():
-    if initdb or not prod:
-        conn = conn_mk()
-        cur = conn.cursor()
-        db_init(cur)
-        if initdb:
-            print("PLEASE KILL SERVER NOW")
-        cur.close()
-        conn.commit()
-        conn.close()
+    conn = conn_mk()
+    cur = conn.cursor()
+    db_init(cur)
+    cur.close()
+    conn.commit()
+    conn.close()
+    print("PLEASE KILL SERVER NOW")
 
 
-setup_db()
+if initdb or not prod:
+    setup_db()
 
 app = Flask(__name__)
 
