@@ -1,0 +1,43 @@
+.organisations {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+}
+
+@media (max-width: 600px) {
+  .organisations {
+    grid-template-columns: 1fr;
+  }
+}
+
+.sidebar {
+  padding: 10%;
+  display: flex;
+  flex-direction: column;
+}
+.sidebar-search {
+  width: 100%;
+}
+
+.organisation-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 4%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin: 10px;
+  transition: all 0.2s ease-in-out;
+}
+
+.organisation-card-image {
+  object-fit: contain;
+  overflow: hidden;
+  width: 100%;
+}
+
+.organisations-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-gap: 5px;
+}

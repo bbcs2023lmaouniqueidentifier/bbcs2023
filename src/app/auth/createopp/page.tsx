@@ -20,14 +20,15 @@ import Image from 'next/image';
 import { useContext, useRef, useState, useEffect } from 'react';
 import './styles.css';
 
-interface OppDetails extends Omit<AccountDetails, 'email' | 'repeat_password'> {
+export interface OppDetails
+  extends Omit<AccountDetails, 'email' | 'repeat_password'> {
   opp_logo: FileList;
   opp_name: string;
   opp_desc: string;
 }
 
 export const LoginPage = () => {
-  const { theming, breakpoints } = useContext(MediaQueryContext);
+  const { theming } = useContext(MediaQueryContext);
   const [fileURL, setFileURL] = useState<string | null>();
 
   const {
