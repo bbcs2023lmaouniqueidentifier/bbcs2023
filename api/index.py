@@ -68,16 +68,21 @@ def signup():
 
     conn = conn_mk()
     cur = conn.cursor()
-    insert_row(
-        cur,
-        "Users",
-        "UserName, UserEmail, UserPwHash, UserPwSalt, UserHours",
-        (uname, email, pwhash, salt(), 0),
-    )
+    select(cur, "Users", "UserName", f"UserName='{uname}'")
+    if len(cur.fetchall()) == 0:
+        insert_row(
+            cur,
+            "Users",
+            "UserName, UserEmail, UserPwHash, UserPwSalt, UserHours",
+            (uname, email, pwhash, salt(), 0),
+        )
+        status = 200
+    else:
+        status = 409
     conn.commit()
     cur.close()
     conn.close()
-    return jsonify({}), 200
+    return jsonify({}), status
 
 
 def check_password(cur, uname, passwd):
