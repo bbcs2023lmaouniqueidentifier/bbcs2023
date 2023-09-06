@@ -23,7 +23,7 @@ def db_setup_schema(cur):
         "Users": [
             "UserID",
             ("UserID", "INTEGER"),
-            ("UserName", "VARCHAR(255)"),
+            ("UserName", "VARCHAR(255) UNIQUE"),
             ("UserEmail", "VARCHAR(255)"),
             ("UserPwHash", "VARCHAR(255)"),
             ("UserPwSalt", "VARCHAR(255)"),

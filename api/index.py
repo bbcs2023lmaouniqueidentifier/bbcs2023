@@ -5,7 +5,13 @@ import sys
 
 sys.path.append(os.getcwd())
 from database.boot import db_connector, db_test_init
-from database.operations import insert_row
+from database.operations import insert_row, select
+
+
+# Auth
+# ERROR: CHANGE CHANGE PLS CHANGE
+salt = lambda: ""
+hash = lambda x: x
 
 
 # Set up database
@@ -30,14 +36,18 @@ setup_db()
 
 app = Flask(__name__)
 
-@app.route('/api/signup', methods=['POST'])
+def get_json():
+    if not request.json:
+        raise Exception("Invalid format")
+
+    return request.json
+
+
+@app.route("/api/signup", methods=["POST"])
 def signup():
-    uname = request.json["username"]
-    passwd = request.json["password"]
-    email = request.json["email"]
-    # ERROR: CHANGE CHANGE PLS CHANGE
-    salt = lambda: ""
-    hash = lambda x: x
+    uname = get_json()["username"]
+    passwd = get_json()["password"]
+    email = get_json()["email"]
     pwhash = hash(passwd + salt())
 
     conn = conn_mk()
@@ -46,19 +56,40 @@ def signup():
         cur,
         "Users",
         "UserName, UserEmail, UserPwHash, UserPwSalt, UserHours",
-        (uname, email, pwhash, salt(), 0)
+        (uname, email, pwhash, salt(), 0),
     )
     conn.commit()
     cur.close()
     conn.close()
     return jsonify({}), 200
 
+
+@app.route("/api/login", methods=["POST"])
+def login():
+    uname = get_json()["username"]
+    passwd = get_json()["password"]
+
+    conn = conn_mk()
+    cur = conn.cursor()
+    select(cur, "Users", "UserPwHash, UserPwSalt", f"UserName='{uname}'")
+    pwhash, pwsalt = cur.fetchone()
+    if hash(passwd + pwsalt) == pwhash:
+        return jsonify({}), 200
+    else:
+        return jsonify({}), 401
+
+
 @app.route("/api/leak", methods=["GET"])
 def index():
     conn = conn_mk()
     cur = conn.cursor()
-    cur.execute(f"SELECT * FROM {request.args['table']};")
-    ret = cur.fetchall()
+    rows = cur.execute(f"SELECT * FROM {request.args['table']};").fetchall()
+    cols = list(
+        map(
+            lambda l: l[1],
+            cur.execute(f"PRAGMA table_info({request.args['table']});").fetchall(),
+        )
+    )
     cur.close()
     conn.close()
-    return ret
+    return jsonify(list(map(lambda row: {k: v for k, v in zip(cols, row)}, rows)))
