@@ -4,9 +4,21 @@ import os
 import sys
 
 sys.path.append(os.getcwd())
-from database.boot import db_connector, db_test_init
+from database.boot import db_connector, db_init
 from database.operations import insert_row, select, update
 
+
+try:
+    os.environ["PROD"]
+    prod = 1
+except KeyError:
+    prod = 0
+
+try:
+    os.environ["INITDB"]
+    initdb = 1
+except KeyError:
+    initdb = 0
 
 # Crypto
 # ERROR: CHANGE CHANGE PLS CHANGE
@@ -20,13 +32,16 @@ try:
     os.remove("testdb.sqlite3")  # breh
 except:
     pass
-conn_mk = db_connector()
+conn_mk = db_connector(prod)
 
 
 def setup_db():
     conn = conn_mk()
     cur = conn.cursor()
-    db_test_init(cur)
+    if initdb or not prod:
+        db_init(cur)
+        if initdb:
+            print("PLEASE KILL SERVER NOW")
     cur.close()
     conn.commit()
     conn.close()
@@ -124,6 +139,33 @@ def passwordchange():
             "Users",
             [("UserPwHash", repr(newpwhash)), ("UserPwSalt", repr(newsalt))],
             f"UserName='{uname}'",
+        )
+        status = 200
+    else:
+        status = 401
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify({}), status
+
+
+@app.route("/api/addopp", methods=["POST"])
+def addopp():
+    uname = get_json()["username"]
+    passwd = get_json()["password"]
+    oppname = get_json()["oppname"]
+    opplogo = get_json()["opplogo"]
+    oppdesc = get_json()["oppdesc"]
+
+    conn = conn_mk()
+    cur = conn.cursor()
+    corr_cred = check_password(cur, uname, passwd)
+    if corr_cred:
+        insert_row(
+            cur,
+            "Opportunities",
+            "OpportunityName, OpportunityCreator, OpportunityLogo, OpportunityDesc",
+            (oppname, uname, opplogo, oppdesc),
         )
         status = 200
     else:

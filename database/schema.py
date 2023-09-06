@@ -5,44 +5,43 @@ def create_table_str(name, attributes, primary):
         l.append(f"{attrname} {attrtype}, ")
     for t in attributes:
         if len(t) == 4:
-            l += f"FOREIGN KEY ({t[0]}) REFERENCES {t[2]}({t[3]})"
-    l.append(f"CONSTRAINT {name}PK PRIMARY KEY ({primary})")
+            l += f" FOREIGN KEY ({t[0]}) REFERENCES {t[2]}({t[3]}), "
+    l.append(f" CONSTRAINT {name}PK PRIMARY KEY ({primary}) ")
     l.append(");")
     return "".join(l)
 
 
 def db_setup_schema(cur):
     tables = {
-        "Organisations": [
-            "OrganisationID",
-            ("OrganisationID", "INTEGER"),
-            ("OrganisationName", "VARCHAR(255)"),
-            ("OrganisationLogo", "BLOB"),
-            ("OrganisationDesc", "VARCHAR(65535)")
-        ],
         "Users": [
-            "UserID",
-            ("UserID", "INTEGER"),
+            "UserName",
             ("UserName", "VARCHAR(255) UNIQUE"),
             ("UserEmail", "VARCHAR(255)"),
             ("UserPwHash", "VARCHAR(255)"),
             ("UserPwSalt", "VARCHAR(255)"),
             ("UserHours", "INTEGER"),
         ],
-        "UserOrg": [
-            "UserOrgUID, UserOrgOID",
-            ("UserOrgUID", "INTEGER", "Users", "UserID"),
-            ("UserOrgOID", "INTEGER", "Organisations", "OrganisationID"),
+        "Opportunities": [
+            "OpportunityName",
+            ("OpportunityName", "VARCHAR(255)"),
+            ("OpportunityCreator", "VARCHAR(255)", "Users", "UserName"),
+            ("OpportunityLogo", "TEXT"),  # base64-encoded png
+            ("OpportunityDesc", "VARCHAR(65535)"),
         ],
-        "MbtiMatch": [
-            "MbtiMatchOID",
-            ("MbtiMatchOID", "INTEGER", "Organisations", "OrganisationID"),
-            ("MbtiMatchMID", "VARCHAR(4)", "Mbti", "MbtiID"),
+        "UserOpp": [
+            "UserOppUName, UserOppOName",
+            ("UserOppUName", "VARCHAR(255)", "Users", "UserName"),
+            ("UserOppOName", "VARCHAR(255)", "Opportunities", "OpportunityName"),
         ],
         "Mbti": [
             "MbtiID",
             ("MbtiID", "VARCHAR(4)"),
             ("MbtiDescr", "VARCHAR(4)"),
+        ],
+        "MbtiMatch": [
+            "MbtiMatchOName",
+            ("MbtiMatchOName", "VARCHAR(255)", "Opportunities", "OpportunityName"),
+            ("MbtiMatchMID", "VARCHAR(4)", "Mbti", "MbtiID"),
         ],
     }
     for name, attrs in tables.items():
