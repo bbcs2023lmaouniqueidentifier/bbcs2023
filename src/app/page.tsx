@@ -1,15 +1,15 @@
 'use client';
-import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import './page.css';
 import ThemeWrapper from './ThemeWrapper';
 import { Button, Typography } from '@mui/material';
-import { useRef, useEffect } from 'react';
-import Navbar from './components/Navbar/Navbar';
+import { useRef } from 'react';
 import { MediaQueryContext } from './components/Providers/MediaQueryProvider';
 import { useContext } from 'react';
 import ImageScroller from './components/ImageScoller/ImageScroller';
 
 export default function Home() {
+  const router = useRouter();
   const { theming, breakpoints } = useContext(MediaQueryContext);
   const imageScrollerRef = useRef<HTMLDivElement>(null);
   const aboutRef = useRef<HTMLDivElement>(null);
@@ -76,6 +76,7 @@ export default function Home() {
             <Button
               className='common-button button about-start-button'
               variant='contained'
+              onClick={() => router.push('/organisations')}
             >
               Find Opportunities
             </Button>
@@ -97,6 +98,7 @@ export default function Home() {
             <Button
               className='common-button button about-start-button'
               variant='contained'
+              onClick={() => router.push('/leaderboard')}
             >
               Track Progress
             </Button>
@@ -118,6 +120,7 @@ export default function Home() {
             <Button
               className='common-button button about-start-button'
               variant='contained'
+              onClick={() => router.push('/auth/createopp')}
             >
               Create Opportunities
             </Button>
@@ -138,6 +141,7 @@ export default function Home() {
             <Button
               className='common-button button about-start-button'
               variant='contained'
+              onClick={() => router.push('/auth/login')}
             >
               Login
             </Button>

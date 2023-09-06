@@ -40,10 +40,8 @@
   flex-direction: column;
   justify-content: center;
   aspect-ratio: 1/1;
-  padding: 5%;
   border-radius: 10px;
   border: 1px solid var(--less-important);
-  z-index: -2;
 
   background-repeat: no-repeat;
   background-position: center;
@@ -60,8 +58,8 @@
   align-items: center;
   gap: 1rem;
   padding: 10%;
-  backdrop-filter: blur(5px) brightness(0.4);
-
+  backdrop-filter: blur(5px) brightness(0.5);
+  height: 100%;
   color: white !important;
   --primary: white !important;
 }
@@ -89,4 +87,5 @@
 
 .about-start-button {
   width: 15vw;
+  cursor: pointer;
 }
