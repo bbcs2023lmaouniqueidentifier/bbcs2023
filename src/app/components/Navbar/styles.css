@@ -21,6 +21,7 @@
   background-repeat: no-repeat;
   background-position: center;
   background-size: cover;
+  cursor: pointer;
 }
 
 .navbar-links {
@@ -37,20 +38,6 @@
   display: flex;
   gap: 1rem;
   align-items: space-between;
-}
-
-.navbar-btn {
-  aspect-ratio: 3.618/1;
-  text-transform: capitalize;
-  color: var(--secondary);
-  background-color: transparent;
-  outline: 2px solid var(--primary);
-}
-
-.navbar-btn:hover {
-  outline-color: var(--secondary);
-  background-color: transparent;
-  color: var(--primary);
 }
 
 .navbar-mobile-dropdown {

@@ -63,7 +63,7 @@ export const Navbar = forwardRef<HTMLDivElement, JSXProps>((props, ref) => {
               </div>
 
               <Button
-                className='button navbar-btn'
+                className='button common-button'
                 variant='contained'
                 onClick={() => router.push('/auth/login')}
               >

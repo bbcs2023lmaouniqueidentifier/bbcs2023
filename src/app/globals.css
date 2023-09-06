@@ -59,6 +59,20 @@ svg {
   font-size: calc(1.1rem * var(--font-scale));
 }
 
+.common-button {
+  aspect-ratio: 3.618/1;
+  text-transform: capitalize;
+  color: var(--secondary);
+  background-color: transparent;
+  outline: 2px solid var(--primary);
+}
+
+.common-button:hover {
+  outline-color: var(--secondary);
+  background-color: transparent;
+  color: var(--primary);
+}
+
 @media (max-width: 800px) {
   .page-container {
     --title-size: calc(2rem * var(--font-scale));

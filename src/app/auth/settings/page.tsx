@@ -140,7 +140,7 @@ export const Settings = () => {
                 variant='contained'
                 color='primary'
                 onClick={handleFontSizeChange}
-                className='save-btn'
+                className='button common-button save-btn'
               >
                 Save & Reload
               </Button>

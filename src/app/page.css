@@ -1,0 +1,92 @@
+.about {
+  padding: 5%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.about-description {
+  overflow-wrap: break-word;
+}
+
+.about-start {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  position: relative;
+  --grid-gap: 1rem;
+  gap: var(--grid-gap);
+  padding: 5%;
+}
+
+@media (max-width: 600px) {
+  .about-start {
+    grid-template-columns: 1fr;
+  }
+  .about-start-button {
+    width: 50vw !important;
+  }
+
+  .about-start-section {
+    padding: 2% !important ;
+  }
+}
+
+.about-start-heading {
+  padding: 0 5%;
+}
+
+.about-start-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  aspect-ratio: 1/1;
+  padding: 5%;
+  border-radius: 10px;
+  border: 1px solid var(--less-important);
+  z-index: -2;
+
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;
+}
+
+.about-start-section-inner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+
+  align-items: center;
+  gap: 1rem;
+  padding: 10%;
+  backdrop-filter: blur(5px) brightness(0.4);
+
+  color: white !important;
+  --primary: white !important;
+}
+
+.about-start-section:nth-child(1) {
+  background-image: url('/clipart/volunteer.png');
+}
+
+.about-start-section:nth-child(2) {
+  background-image: url('/clipart/race.png');
+}
+
+.about-start-section:nth-child(3) {
+  background-image: url('/clipart/raisehand.png');
+}
+
+.about-start-section:nth-child(4) {
+  background-image: url('/clipart/login.png');
+}
+
+.no-background-image::after {
+  display: none !important;
+  background-image: none !important;
+}
+
+.about-start-button {
+  width: 15vw;
+}

@@ -54,7 +54,7 @@ export const ChangePassword = ({ user }: { user: User }) => {
         <Button
           variant='contained'
           color='primary'
-          className='save-btn'
+          className='button common-button save-btn'
           type='submit'
         >
           Save
