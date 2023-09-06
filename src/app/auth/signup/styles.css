@@ -1,0 +1,59 @@
+.signup-container {
+  display: grid;
+  grid-template-columns: 3fr 4fr;
+  height: calc(100vh - var(--navbar-height));
+}
+
+@media (max-width: 600px) {
+  .signup-container {
+    display: flex;
+  }
+}
+
+.signup-image {
+  overflow: hidden;
+}
+
+.signup {
+  padding: 15% 10% 0 10%;
+  flex-grow: 1;
+}
+
+.signup-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+}
+
+.submit-button {
+  aspect-ratio: 3.1618;
+  width: 12vw;
+  text-transform: capitalize;
+  color: var(--secondary);
+  background-color: transparent;
+  outline: 2px solid var(--primary);
+}
+
+@media (max-width: 600px) {
+  .submit-button {
+    aspect-ratio: 7;
+    width: 35vw;
+  }
+}
+
+.submit-button:hover {
+  outline-color: var(--secondary);
+  background-color: transparent;
+  color: var(--primary);
+}
+
+.form-control {
+  width: 100%;
+}
+
+.auth-text {
+  margin-bottom: 2rem;
+  color: var(--primary);
+}

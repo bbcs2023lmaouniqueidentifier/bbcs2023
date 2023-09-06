@@ -1,0 +1,62 @@
+.navbar {
+  background-color: rgba(var(--background-color), 0.8);
+  backdrop-filter: blur(5px);
+
+  border-radius: 0 0 10px 10px;
+  box-shadow: 0 10px 30px -10px rgba(2, 12, 27, 0.7);
+}
+
+.navbar-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.navbar-logo {
+  border-radius: 50%;
+  height: 7vh;
+
+  aspect-ratio: 1/1;
+  background-image: url('/bbcs_favicon.webp');
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: cover;
+  cursor: pointer;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.navbar-link {
+  color: var(--primary);
+  text-decoration: none;
+}
+
+.navbar-misc {
+  display: flex;
+  gap: 1rem;
+  align-items: space-between;
+}
+
+.navbar-mobile-dropdown {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.4vh;
+}
+
+.navbar-mobile-dropdown-button {
+  text-transform: capitalize;
+  padding: 1%;
+  color: var(--primary);
+  padding: 2%;
+  text-decoration: none;
+}
+
+/* for some reason if your mobile device supports hover or ur desktop is tiny... */
+.navbar-mobile-dropdown-button:hover {
+  border: 1px solid var(--secondary);
+  border-radius: 5px;
+}
