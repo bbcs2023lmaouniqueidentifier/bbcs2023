@@ -5,10 +5,10 @@ import sys
 
 sys.path.append(os.getcwd())
 from database.boot import db_connector, db_test_init
-from database.operations import insert_row, select
+from database.operations import insert_row, select, update
 
 
-# Auth
+# Crypto
 # ERROR: CHANGE CHANGE PLS CHANGE
 salt = lambda: ""
 hash = lambda x: x
@@ -64,6 +64,12 @@ def signup():
     return jsonify({}), 200
 
 
+def check_password(cur, uname, passwd):
+    select(cur, "Users", "UserPwHash, UserPwSalt", f"UserName='{uname}'")
+    pwhash, pwsalt = cur.fetchone()
+    return hash(passwd + pwsalt) == pwhash
+
+
 @app.route("/api/login", methods=["POST"])
 def login():
     uname = get_json()["username"]
@@ -71,12 +77,60 @@ def login():
 
     conn = conn_mk()
     cur = conn.cursor()
-    select(cur, "Users", "UserPwHash, UserPwSalt", f"UserName='{uname}'")
-    pwhash, pwsalt = cur.fetchone()
-    if hash(passwd + pwsalt) == pwhash:
+    corr_cred = check_password(cur, uname, passwd)
+    cur.close()
+    conn.close()
+    if corr_cred:
         return jsonify({}), 200
     else:
         return jsonify({}), 401
+
+
+@app.route("/api/emailchange", methods=["POST"])
+def emailchange():
+    uname = get_json()["username"]
+    passwd = get_json()["password"]
+    newemail = get_json()["newemail"]
+
+    conn = conn_mk()
+    cur = conn.cursor()
+    corr_cred = check_password(cur, uname, passwd)
+    if corr_cred:
+        update(cur, "Users", [("UserEmail", repr(newemail))], f"UserName='{uname}'")
+        status = 200
+    else:
+        status = 401
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify({}), status
+
+
+@app.route("/api/passwordchange", methods=["POST"])
+def passwordchange():
+    uname = get_json()["username"]
+    passwd = get_json()["password"]
+    newpasswd = get_json()["newpassword"]
+
+    conn = conn_mk()
+    cur = conn.cursor()
+    corr_cred = check_password(cur, uname, passwd)
+    if corr_cred:
+        newsalt = salt()
+        newpwhash = hash(newpasswd + newsalt)
+        update(
+            cur,
+           "Users",
+           [("UserPwHash", repr(newpwhash)), ("UserPwSalt", repr(newsalt))],
+           f"UserName='{uname}'"
+        )
+        status = 200
+    else:
+        status = 401
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify({}), status
 
 
 @app.route("/api/leak", methods=["GET"])
