@@ -1,0 +1,28 @@
+.vertical-select {
+  display: flex;
+  flex-direction: column;
+  gap: 2vh;
+  padding: 3%;
+  margin-top: 10vh;
+  width: 15vw;
+  justify-content: space-around;
+}
+
+.vertical-select-item {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 2vw;
+  justify-content: flex-start;
+}
+
+.vertical-select-item-text {
+  font-weight: bold;
+  flex-grow: 1;
+}
+
+.vertical-select-item-icon {
+  transform: scale(1.2);
+  display: absolute;
+  color: var(--primary);
+}
