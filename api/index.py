@@ -8,18 +8,6 @@ from database.boot import db_connector, db_init
 from database.operations import insert_row, select, update, delete
 
 
-try:
-    os.environ["PROD"]
-    prod = 1
-except KeyError:
-    prod = 0
-
-try:
-    os.environ["INITDB"]
-    initdb = 1
-except KeyError:
-    initdb = 0
-
 # Crypto
 # ERROR: CHANGE CHANGE PLS CHANGE
 salt = lambda: ""
@@ -28,26 +16,7 @@ hash = lambda x: x
 
 # Set up database
 # Who needs pooling smh
-if not prod:
-    try:
-        os.remove("testdb.sqlite3")  # breh
-    except:
-        pass
-conn_mk = db_connector(prod)
-
-
-def setup_db():
-    conn = conn_mk()
-    cur = conn.cursor()
-    db_init(cur)
-    cur.close()
-    conn.commit()
-    conn.close()
-    print("PLEASE KILL SERVER NOW")
-
-
-if initdb or not prod:
-    setup_db()
+conn_mk = db_connector("PROD" in os.environ)
 
 app = Flask(__name__)
 
