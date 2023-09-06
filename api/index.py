@@ -247,11 +247,11 @@ def assignmbtis():
 
     conn = conn_mk()
     cur = conn.cursor()
-    select(cur, "Opportunities", "OpportunityCreator", f"OpportunityName='{opp}'")
-    creator = cur.fetchone()[0]
-
     status = 500
     try:
+        select(cur, "Opportunities", "OpportunityCreator", f"OpportunityName='{opp}'")
+        creator = cur.fetchone()[0]
+
         if creator != uname:
             status = 403
             raise Exception
@@ -269,6 +269,28 @@ def assignmbtis():
     cur.close()
     conn.close()
     return jsonify({}), status
+
+
+@app.route("/api/fetchmbtis", methods=["GET"])
+def fetchmbtis():
+    opp = request.args["oppname"]
+
+    conn = conn_mk()
+    cur = conn.cursor()
+
+    status = 500
+    ret = []
+    try:
+        select(cur, "MbtiMatch", "MbtiCat", f"MbtiMatchOName='{opp}'")
+        ret = list(map(lambda t: t[0], cur.fetchall()))
+        status = 200
+    except:
+        pass
+
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify(ret), status
 
 
 @app.route("/api/leak", methods=["GET"])
