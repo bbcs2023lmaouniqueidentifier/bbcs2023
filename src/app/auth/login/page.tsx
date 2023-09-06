@@ -15,13 +15,16 @@ import { SignInValidation } from './Validation';
 import { AccountDetails } from '@/app/types';
 import { ThemeWrapper } from '@/app/ThemeWrapper';
 import { MediaQueryContext } from '@/app/components/Providers/MediaQueryProvider';
-import { useContext, useEffect, useState } from 'react';
-import Navbar from '@/app/components/Navbar/Navbar';
+import { useContext } from 'react';
+import { useRouter, usePathname } from 'next/navigation';
+import { AlertProps } from '@/app/components/AlertToast/AlertToast';
 import './styles.css';
 import { authorise } from '@/app/api/auth';
 
 export const LoginPage = () => {
   const { theming, breakpoints } = useContext(MediaQueryContext);
+  const router = useRouter();
+  const pathname = usePathname();
   const {
     register,
     handleSubmit,
@@ -33,9 +36,26 @@ export const LoginPage = () => {
   const handleLogin = async (
     form: Omit<AccountDetails, 'email' | 'repeat_password'>,
   ) => {
-    authorise(form).then((authed) =>
-      console.log(authed ? 'LOGIN OK' : 'LOGIN FAILED'),
-    );
+    authorise(form).then((authed) => {
+      if (authed) {
+        const alertContentRedirect: AlertProps = {
+          severity: 'success',
+          title: 'Login successful!',
+          description: 'Redirecting you to the home page...',
+        };
+        router.push(`/?alertContent=${JSON.stringify(alertContentRedirect)}`);
+      } else {
+        const alertContent: AlertProps = {
+          severity: 'error',
+          title: 'Login failed!',
+          description: 'Please try again.',
+        };
+        router.replace(
+          `${pathname}?alertContent=${JSON.stringify(alertContent)}`,
+        );
+      }
+      console.log(authed ? 'LOGIN OK' : 'LOGIN FAILED');
+    });
   };
 
   const textFieldStyles = {

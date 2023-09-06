@@ -1,12 +1,5 @@
 'use client';
-import {
-  Box,
-  Button,
-  FormControl,
-  TextField,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Button, FormControl, TextField, Typography } from '@mui/material';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
@@ -15,13 +8,17 @@ import { SignUpValidation } from './Validation';
 import { AccountDetails } from '@/app/types';
 import { ThemeWrapper } from '@/app/ThemeWrapper';
 import { MediaQueryContext } from '@/app/components/Providers/MediaQueryProvider';
-import { useContext, useEffect, useState } from 'react';
+import { useContext } from 'react';
 import { registerAccount } from '@/app/api/auth';
-import Navbar from '@/app/components/Navbar/Navbar';
+import { useRouter, usePathname } from 'next/navigation';
+import { AlertProps } from '@/app/components/AlertToast/AlertToast';
 import './styles.css';
 
 export const SignUpPage = () => {
   const { theming, breakpoints } = useContext(MediaQueryContext);
+  const router = useRouter();
+  const pathname = usePathname();
+
   const {
     register,
     handleSubmit,
@@ -31,9 +28,25 @@ export const SignUpPage = () => {
   });
 
   const handleRegister = async (form: AccountDetails) => {
-    registerAccount(form).then((authed) =>
-      console.log(authed ? 'REG OK' : 'REG FAILED'),
-    );
+    registerAccount(form).then((authed) => {
+      if (authed) {
+        const alertContentRedirect: AlertProps = {
+          severity: 'success',
+          title: 'Signup successful!',
+          description: 'Welcome to the Samaritan Club!',
+        };
+        router.push(`/?alertContent=${JSON.stringify(alertContentRedirect)}`);
+      } else {
+        const alertContent: AlertProps = {
+          severity: 'error',
+          title: 'Signup failed!',
+          description: 'Please try again.',
+        };
+        router.replace(
+          `${pathname}?alertContent=${JSON.stringify(alertContent)}`,
+        );
+      }
+    });
   };
 
   const textFieldStyles = {

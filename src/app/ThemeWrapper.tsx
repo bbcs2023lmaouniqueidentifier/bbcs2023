@@ -14,6 +14,8 @@ import {
 import { MediaQueryContext } from './components/Providers/MediaQueryProvider';
 import { darkThemeOptions, lightThemeOptions } from './themes';
 import Navbar from './components/Navbar/Navbar';
+import { AlertToast, AlertProps } from './components/AlertToast/AlertToast';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 type ThemeWrapperProps = {
   children: ReactNode;
@@ -21,6 +23,13 @@ type ThemeWrapperProps = {
 };
 
 export const ThemeWrapper = ({ children, darkTheme }: ThemeWrapperProps) => {
+  const [alertContent, setAlertContent] = useState<AlertProps | undefined>(
+    undefined,
+  );
+  const [openAlert, setOpenAlert] = useState<boolean>(false);
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
   const { theming } = useContext(MediaQueryContext);
   const [isDark, setIsDark] = useState<boolean>(theming.darkMode);
   const theme = createTheme(isDark ? darkThemeOptions : lightThemeOptions);
@@ -94,12 +103,28 @@ export const ThemeWrapper = ({ children, darkTheme }: ThemeWrapperProps) => {
     }
   }, [navbarRef, childrenRef]);
 
+  useEffect(() => {
+    if (searchParams.get('alertContent')) {
+      try {
+        setAlertContent(JSON.parse(searchParams.get('alertContent') as string));
+        setOpenAlert(true);
+      } catch (e) {
+        console.log(e);
+      }
+    }
+  }, [searchParams]);
+
   return (
     <ThemeProvider theme={theme}>
       <StyledEngineProvider injectFirst>
         <div ref={pageContainerRef} className='page-container'>
           <Navbar ref={navbarRef} />
           <div ref={childrenRef}>{children}</div>
+          <AlertToast
+            openAlert={openAlert}
+            onClose={() => setOpenAlert(false)}
+            alertContent={alertContent}
+          />
         </div>
       </StyledEngineProvider>
     </ThemeProvider>
