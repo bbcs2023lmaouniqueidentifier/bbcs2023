@@ -18,6 +18,7 @@ import { MediaQueryContext } from '@/app/components/Providers/MediaQueryProvider
 import { useContext, useEffect, useState } from 'react';
 import Navbar from '@/app/components/Navbar/Navbar';
 import './styles.css';
+import { authorise } from '@/app/api/auth';
 
 export const LoginPage = () => {
   const { theming, breakpoints } = useContext(MediaQueryContext);
@@ -29,10 +30,12 @@ export const LoginPage = () => {
     resolver: yupResolver(SignInValidation),
   });
 
-  const handleRegister = async (
+  const handleLogin = async (
     form: Omit<AccountDetails, 'email' | 'repeat_password'>,
   ) => {
-    console.log(form);
+    authorise(form).then((authed) =>
+      console.log(authed ? 'LOGIN OK' : 'LOGIN FAILED'),
+    );
   };
 
   const textFieldStyles = {
@@ -68,7 +71,7 @@ export const LoginPage = () => {
             </Typography>
           </div>
 
-          <form className='login-form' onSubmit={handleSubmit(handleRegister)}>
+          <form className='login-form' onSubmit={handleSubmit(handleLogin)}>
             <FormControl id='username' className='form-control'>
               <TextField
                 sx={textFieldStyles}
