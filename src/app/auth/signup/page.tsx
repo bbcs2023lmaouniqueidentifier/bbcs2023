@@ -16,6 +16,7 @@ import { AccountDetails } from '@/app/types';
 import { ThemeWrapper } from '@/app/ThemeWrapper';
 import { MediaQueryContext } from '@/app/components/Providers/MediaQueryProvider';
 import { useContext, useEffect, useState } from 'react';
+import { registerAccount } from '@/app/api/auth';
 import Navbar from '@/app/components/Navbar/Navbar';
 import './styles.css';
 
@@ -30,7 +31,9 @@ export const SignUpPage = () => {
   });
 
   const handleRegister = async (form: AccountDetails) => {
-    console.log(form);
+    registerAccount(form).then((authed) =>
+      console.log(authed ? 'REG OK' : 'REG FAILED'),
+    );
   };
 
   const textFieldStyles = {
@@ -83,8 +86,8 @@ export const SignUpPage = () => {
                 sx={textFieldStyles}
                 type='email'
                 label='Email'
-                error={Boolean(errors.username)}
-                helperText={errors.username?.message}
+                error={Boolean(errors.email)}
+                helperText={errors.email?.message}
                 {...register('email')}
                 required
               />

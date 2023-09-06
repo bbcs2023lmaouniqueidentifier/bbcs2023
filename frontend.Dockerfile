@@ -10,6 +10,8 @@ COPY --link src ./src
 COPY --link public ./public
 COPY --link tsconfig.json .
 COPY --link next.config.js .
+COPY --link .env ./.env
+COPY --link .env.development ./.env.development
 
 ENV NEXT_TELEMETRY_DISABLED 1
 
