@@ -36,15 +36,15 @@ conn_mk = db_connector(prod)
 
 
 def setup_db():
-    conn = conn_mk()
-    cur = conn.cursor()
     if initdb or not prod:
+        conn = conn_mk()
+        cur = conn.cursor()
         db_init(cur)
         if initdb:
             print("PLEASE KILL SERVER NOW")
-    cur.close()
-    conn.commit()
-    conn.close()
+        cur.close()
+        conn.commit()
+        conn.close()
 
 
 setup_db()
