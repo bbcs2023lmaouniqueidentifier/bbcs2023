@@ -5,7 +5,7 @@ import sys
 
 sys.path.append(os.getcwd())
 from database.boot import db_connector, db_init
-from database.operations import insert_row, select, update
+from database.operations import insert_row, select, update, delete
 
 
 try:
@@ -182,14 +182,54 @@ def addopp():
 
 
 @app.route("/api/getopps", methods=["GET"])
-def index():
+def getopps():
     conn = conn_mk()
     cur = conn.cursor()
-    rows = cur.execute("SELECT OpportunityName, OpportunityCreator, OpportunityLogo, OpportunityDesc FROM Opportunities;").fetchall()
-    cols = ("OpportunityName", "OpportunityCreator", "OpportunityLogo", "OpportunityDesc")
+    rows = cur.execute(
+        "SELECT OpportunityName, OpportunityCreator, OpportunityLogo, OpportunityDesc FROM Opportunities;"
+    ).fetchall()
+    cols = (
+        "OpportunityName",
+        "OpportunityCreator",
+        "OpportunityLogo",
+        "OpportunityDesc",
+    )
     cur.close()
     conn.close()
     return jsonify(list(map(lambda row: {k: v for k, v in zip(cols, row)}, rows)))
+
+
+@app.route("/api/assignmbtis", methods=["POST"])
+def assignmbtis():
+    uname = get_json()["username"]
+    passwd = get_json()["password"]
+    opp = get_json()["oppname"]
+    mbtis = get_json()["mbtis"]
+
+    conn = conn_mk()
+    cur = conn.cursor()
+    select(cur, "Opportunities", "OpportunityCreator", f"OpportunityName='{opp}'")
+    creator = cur.fetchone()[0]
+
+    try:
+        if creator != uname:
+            raise Exception(403)
+        if not check_password(cur, uname, passwd):
+            status = 401
+            raise Exception(401)
+        delete(cur, "MbtiMatch", f"MbtiMatchOName='{opp}'")
+        for mbti in mbtis:
+            insert_row(cur, "MbtiMatch", "MbtiMatchOName, MbtiCat", (opp, mbti))
+
+        status = 200
+    except Exception as e:
+        status = e.args[0]
+        print(status)
+
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify({}), status
 
 
 @app.route("/api/leak", methods=["GET"])

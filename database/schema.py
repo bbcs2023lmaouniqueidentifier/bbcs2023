@@ -33,15 +33,10 @@ def db_setup_schema(cur):
             ("UserOppUName", "VARCHAR(255)", "Users", "UserName"),
             ("UserOppOName", "VARCHAR(255)", "Opportunities", "OpportunityName"),
         ],
-        "Mbti": [
-            "MbtiID",
-            ("MbtiID", "VARCHAR(4)"),
-            ("MbtiDescr", "VARCHAR(4)"),
-        ],
         "MbtiMatch": [
-            "MbtiMatchOName",
+            "MbtiMatchOName, MbtiCat",
             ("MbtiMatchOName", "VARCHAR(255)", "Opportunities", "OpportunityName"),
-            ("MbtiMatchMID", "VARCHAR(4)", "Mbti", "MbtiID"),
+            ("MbtiCat", "VARCHAR(4)"),
         ],
     }
     for name, attrs in tables.items():

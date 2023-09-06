@@ -12,3 +12,7 @@ def update(cur, table, pairs, cond):
             ','.join(map(lambda t: f'{t[0]}={t[1]}', pairs))
         } WHERE {cond};"""
     )
+ 
+
+def delete(cur, table, cond):
+    cur.execute(f"DELETE FROM {table} WHERE {cond};")
