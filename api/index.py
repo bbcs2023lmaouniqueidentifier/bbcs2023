@@ -53,11 +53,11 @@ def signup():
     conn.close()
     return jsonify({}), 200
 
-@app.route("/api/leak")
+@app.route("/api/leak", methods=["GET"])
 def index():
     conn = conn_mk()
     cur = conn.cursor()
-    cur.execute("SELECT * FROM Users;")
+    cur.execute(f"SELECT * FROM {request.args['table']};")
     ret = cur.fetchall()
     cur.close()
     conn.close()

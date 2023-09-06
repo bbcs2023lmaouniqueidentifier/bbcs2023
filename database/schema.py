@@ -15,34 +15,34 @@ def db_setup_schema(cur):
     tables = {
         "Organisations": [
             "OrganisationID",
-            ("OrganisationID", "rowid"),
-            ("OrganisationName", "varchar(255)"),
-            ("OrganisationLogo", "blob"),
-            ("OrganisationDesc", "varchar(65535)")
+            ("OrganisationID", "INTEGER"),
+            ("OrganisationName", "VARCHAR(255)"),
+            ("OrganisationLogo", "BLOB"),
+            ("OrganisationDesc", "VARCHAR(65535)")
         ],
         "Users": [
             "UserID",
-            ("UserID", "rowid"),
-            ("UserName", "varchar(255)"),
-            ("UserEmail", "varchar(255)"),
-            ("UserPwHash", "varchar(255)"),
-            ("UserPwSalt", "varchar(255)"),
-            ("UserHours", "int"),
+            ("UserID", "INTEGER"),
+            ("UserName", "VARCHAR(255)"),
+            ("UserEmail", "VARCHAR(255)"),
+            ("UserPwHash", "VARCHAR(255)"),
+            ("UserPwSalt", "VARCHAR(255)"),
+            ("UserHours", "INTEGER"),
         ],
         "UserOrg": [
             "UserOrgUID, UserOrgOID",
-            ("UserOrgUID", "int", "Users", "UserID"),
-            ("UserOrgOID", "int", "Organisations", "OrganisationID"),
+            ("UserOrgUID", "INTEGER", "Users", "UserID"),
+            ("UserOrgOID", "INTEGER", "Organisations", "OrganisationID"),
         ],
         "MbtiMatch": [
             "MbtiMatchOID",
-            ("MbtiMatchOID", "int", "Organisations", "OrganisationID"),
-            ("MbtiMatchMID", "varchar(4)", "Mbti", "MbtiID"),
+            ("MbtiMatchOID", "INTEGER", "Organisations", "OrganisationID"),
+            ("MbtiMatchMID", "VARCHAR(4)", "Mbti", "MbtiID"),
         ],
         "Mbti": [
             "MbtiID",
-            ("MbtiID", "varchar(4)"),
-            ("MbtiDescr", "varchar(4)"),
+            ("MbtiID", "VARCHAR(4)"),
+            ("MbtiDescr", "VARCHAR(4)"),
         ],
     }
     for name, attrs in tables.items():
