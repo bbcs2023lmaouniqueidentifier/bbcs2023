@@ -176,8 +176,19 @@ def addopp():
     return jsonify({}), status
 
 
-@app.route("/api/leak", methods=["GET"])
+@app.route("/api/getopps", methods=["GET"])
 def index():
+    conn = conn_mk()
+    cur = conn.cursor()
+    rows = cur.execute("SELECT OpportunityName, OpportunityCreator, OpportunityLogo, OpportunityDesc FROM Opportunities;").fetchall()
+    cols = ("OpportunityName", "OpportunityCreator", "OpportunityLogo", "OpportunityDesc")
+    cur.close()
+    conn.close()
+    return jsonify(list(map(lambda row: {k: v for k, v in zip(cols, row)}, rows)))
+
+
+@app.route("/api/leak", methods=["GET"])
+def leak():
     conn = conn_mk()
     cur = conn.cursor()
     rows = cur.execute(f"SELECT * FROM {request.args['table']};").fetchall()

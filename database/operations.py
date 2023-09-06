@@ -1,6 +1,3 @@
-zipwith = lambda f, l1, l2: map(lambda t: f(t[0], t[1]), zip(l1, l2))
-
-
 def insert_row(cur, table, cols, values):
     cur.execute(f"INSERT INTO {table}({cols}) VALUES {str(values)}")
 
