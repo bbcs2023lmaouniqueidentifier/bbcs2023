@@ -35,6 +35,7 @@ services:
     volumes:
       - ./api:/app/api
       - ./service:/app/service
+      - ./database:/app/database
     restart: always
 
 networks:

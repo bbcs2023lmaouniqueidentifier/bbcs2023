@@ -11,6 +11,7 @@ RUN apt-get update && apt-get install -y build-essential libffi-dev
 RUN apt-get install -y python3-dev libpq-dev 
 
 COPY --link service ./service
+COPY --link database ./database
 COPY --link api ./api
 COPY --link requirements.txt ./requirements.txt
 COPY .env.local .env.local
