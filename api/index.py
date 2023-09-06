@@ -28,10 +28,11 @@ hash = lambda x: x
 
 # Set up database
 # Who needs pooling smh
-try:
-    os.remove("testdb.sqlite3")  # breh
-except:
-    pass
+if not prod:
+    try:
+        os.remove("testdb.sqlite3")  # breh
+    except:
+        pass
 conn_mk = db_connector(prod)
 
 
