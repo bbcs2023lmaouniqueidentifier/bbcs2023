@@ -53,8 +53,8 @@ def signup():
             status = 200
         else:
             status = 409
-    except:
-        pass
+    except Exception as e:
+        print(e)
 
     conn.commit()
     cur.close()
@@ -79,8 +79,8 @@ def login():
 
     try:
         status = 200 if check_password(cur, uname, passwd) else 401
-    except:
-        pass
+    except Exception as e:
+        print(e)
     cur.close()
     conn.close()
 
@@ -104,8 +104,8 @@ def emailchange():
             status = 200
         else:
             status = 401
-    except:
-        pass
+    except Exception as e:
+        print(e)
 
     conn.commit()
     cur.close()
@@ -137,8 +137,8 @@ def passwordchange():
             status = 200
         else:
             status = 401
-    except:
-        pass
+    except Exception as e:
+        print(e)
 
     conn.commit()
     cur.close()
@@ -173,8 +173,8 @@ def addopp():
                 status = 409  # probably
         else:
             status = 401
-    except:
-        pass
+    except Exception as e:
+        print(e)
 
     conn.commit()
     cur.close()
@@ -201,8 +201,8 @@ def getopps():
         )
         ret = list(map(lambda row: {k: v for k, v in zip(cols, row)}, rows))
         status = 200
-    except:
-        pass
+    except Exception as e:
+        print(e)
 
     cur.close()
     conn.close()
@@ -233,8 +233,8 @@ def assignmbtis():
         for mbti in mbtis:
             insert_row(cur, "MbtiMatch", "MbtiMatchOName, MbtiCat", (opp, mbti))
         status = 200
-    except:
-        pass
+    except Exception as e:
+        print(e)
 
     conn.commit()
     cur.close()
@@ -255,8 +255,8 @@ def fetchmbtis():
         select(cur, "MbtiMatch", "MbtiCat", f"MbtiMatchOName='{opp}'")
         ret = list(map(lambda t: t[0], cur.fetchall()))
         status = 200
-    except:
-        pass
+    except Exception as e:
+        print(e)
 
     conn.commit()
     cur.close()
@@ -281,8 +281,8 @@ def leak():
         )
         ret = list(map(lambda row: {k: v for k, v in zip(cols, row)}, rows))
         status = 200
-    except:
-        pass
+    except Exception as e:
+        print(e)
 
     cur.close()
     conn.close()

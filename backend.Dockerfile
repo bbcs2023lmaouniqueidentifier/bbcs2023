@@ -15,8 +15,12 @@ COPY --link database ./database
 COPY --link api ./api
 COPY --link requirements.txt ./requirements.txt
 COPY .env.local .env.local
+COPY testdb.sqlite3 ./testdb.sqlite3
 
 RUN pip install --upgrade pip
 RUN pip install --default-timeout=60 -r requirements.txt
+
+# drops and resets database
+RUN python database/init_all.py
 
 CMD flask run --host=0.0.0.0 -p 5000 --debug
