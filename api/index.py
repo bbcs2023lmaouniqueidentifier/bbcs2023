@@ -31,6 +31,10 @@ def get_json():
     return request.json
 
 
+class BadUsernameException(BaseException):
+    pass
+
+
 @app.route("/api/register", methods=["POST"])
 def register():
     uname = get_json()["username"]
@@ -54,8 +58,8 @@ def register():
             status = 200
         else:
             status = 409
-    except Exception as e:
-        print(e)
+    except Exception:
+        pass
 
     conn.commit()
     cur.close()
@@ -64,9 +68,12 @@ def register():
 
 
 def check_password(cur, uname, passwd):
-    select(cur, "Users", "UserPwHash, UserPwSalt", f"UserName='{uname}'")
-    pwhash, pwsalt = cur.fetchone()
-    return hash(passwd + pwsalt) == pwhash
+    try:
+        select(cur, "Users", "UserPwHash, UserPwSalt", f"UserName='{uname}'")
+        pwhash, pwsalt = cur.fetchone()
+        return hash(passwd + pwsalt) == pwhash
+    except:
+        raise BadUsernameException()  # probably
 
 
 @app.route("/api/login", methods=["POST"])
@@ -80,9 +87,10 @@ def login():
 
     try:
         status = 200 if check_password(cur, uname, passwd) else 401
-    except Exception as e:
+    except BadUsernameException:
+        status = 401
+    except Exception:
         status = 401  # ???
-        print(e)
     cur.close()
     conn.close()
 
@@ -106,8 +114,10 @@ def emailchange():
             status = 200
         else:
             status = 401
-    except Exception as e:
-        print(e)
+    except BadUsernameException:
+        status = 401
+    except Exception:
+        pass
 
     conn.commit()
     cur.close()
@@ -139,8 +149,10 @@ def passwordchange():
             status = 200
         else:
             status = 401
-    except Exception as e:
-        print(e)
+    except BadUsernameException:
+        status = 401
+    except Exception:
+        pass
 
     conn.commit()
     cur.close()
@@ -162,8 +174,8 @@ def usermbti():
             select(cur, "Users", "UserMbti", f"UserName='{uname}'")
             ret = cur.fetchone()[0]
             status = 200
-        except Exception as e:
-            print(e)
+        except Exception:
+            pass
 
         conn.commit()
         cur.close()
@@ -193,8 +205,10 @@ def usermbti():
                     status = 413  # probably
             else:
                 status = 401
-        except Exception as e:
-            print(e)
+        except BadUsernameException:
+            status = 401
+        except Exception:
+            pass
 
         conn.commit()
         cur.close()
@@ -229,8 +243,10 @@ def addopp():
                 status = 409  # probably
         else:
             status = 401
-    except Exception as e:
-        print(e)
+    except BadUsernameException:
+        status = 401
+    except Exception:
+        pass
 
     conn.commit()
     cur.close()
@@ -257,8 +273,8 @@ def getopps():
         )
         ret = list(map(lambda row: {k: v for k, v in zip(cols, row)}, rows))
         status = 200
-    except Exception as e:
-        print(e)
+    except Exception:
+        pass
 
     cur.close()
     conn.close()
@@ -289,8 +305,10 @@ def assignmbtis():
         for mbti in mbtis:
             insert_row(cur, "MbtiMatch", "MbtiMatchOName, MbtiCat", (opp, mbti))
         status = 200
-    except Exception as e:
-        print(e)
+    except BadUsernameException:
+        status = 401
+    except Exception:
+        pass
 
     conn.commit()
     cur.close()
@@ -311,8 +329,8 @@ def fetchmbtis():
         select(cur, "MbtiMatch", "MbtiCat", f"MbtiMatchOName='{opp}'")
         ret = list(map(lambda t: t[0], cur.fetchall()))
         status = 200
-    except Exception as e:
-        print(e)
+    except Exception:
+        pass
 
     conn.commit()
     cur.close()
@@ -346,6 +364,8 @@ def addhours():
             f"UserName='{uname}'"
         )
         status = 200
+    except BadUsernameException:
+        status = 401
     except:
         pass
 
@@ -413,8 +433,8 @@ def leak():
         )
         ret = list(map(lambda row: {k: v for k, v in zip(cols, row)}, rows))
         status = 200
-    except Exception as e:
-        print(e)
+    except Exception:
+        pass
 
     cur.close()
     conn.close()
