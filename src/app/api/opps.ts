@@ -11,12 +11,29 @@ export const getOpps = async () => {
   return resp.json();
 };
 
-export const addOpps = async () => {
+export const addOpps = (user: any) => async (form: any) => {
+  const data = {
+    'username': user.username,
+    'oppname': form.title,
+    'opplogo': Buffer.from(form.logo).toString('base64'),
+    'oppdesc': form.description
+  }
   const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/addopps`, {
     cache: 'no-store',
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(form),
+    body: JSON.stringify(data),
   });
-  return resp.status == 200;
+  const data2 = {
+    'username': user.username,
+    'oppname': form.title,
+    'mbtis': form.mbti
+  }
+  const resp2 = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/assignmbtis`, {
+    cache: 'no-store',
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data2),
+  });
+  return resp.status == 200 && resp2.status == 200;
 };
