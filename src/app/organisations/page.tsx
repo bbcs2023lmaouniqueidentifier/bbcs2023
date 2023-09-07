@@ -45,21 +45,25 @@ export const Organisations = () => {
               opp_name='Singapore Red Cross'
               opp_desc='The Singapore Red Cross is a homegrown humanitarian organisation dedicated to relieving human suffering, protecting lives and dignity and responding to emergencies since 1949. We are part of a world-wide, non-political, non-religious movement - the International Red Cross and Red Crescent Movement - comprising 190 National Societies, more than 17 million volunteers and 450,000 staff worldwide.'
               opp_logo={temp}
+              opp_short_desc='hi'
             />
             <OrganisationCard
               opp_name='Singapore Red Cross'
               opp_desc='The Singapore Red Cross is a homegrown humanitarian organisation dedicated to relieving human suffering, protecting lives and dignity and responding to emergencies since 1949. We are part of a world-wide, non-political, non-religious movement - the International Red Cross and Red Crescent Movement - comprising 190 National Societies, more than 17 million volunteers and 450,000 staff worldwide.'
               opp_logo={temp}
+              opp_short_desc='hi'
             />
             <OrganisationCard
               opp_name='Singapore Red Cross'
               opp_desc='The Singapore Red Cross is a homegrown humanitarian organisation dedicated to relieving human suffering, protecting lives and dignity and responding to emergencies since 1949. We are part of a world-wide, non-political, non-religious movement - the International Red Cross and Red Crescent Movement - comprising 190 National Societies, more than 17 million volunteers and 450,000 staff worldwide.'
               opp_logo={temp}
+              opp_short_desc='hi'
             />
             <OrganisationCard
               opp_name='Singapore Red Cross'
               opp_desc='The Singapore Red Cross is a homegrown humanitarian organisation dedicated to relieving human suffering, protecting lives and dignity and responding to emergencies since 1949. We are part of a world-wide, non-political, non-religious movement - the International Red Cross and Red Crescent Movement - comprising 190 National Societies, more than 17 million volunteers and 450,000 staff worldwide.'
               opp_logo={temp}
+              opp_short_desc='hi'
             />
           </div>
         </div>

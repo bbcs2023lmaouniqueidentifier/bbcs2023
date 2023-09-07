@@ -7,6 +7,12 @@
   height: 100%;
 }
 
+.vertical-select-title {
+  font-weight: bold;
+  min-width: 150px;
+  flex-grow: 1;
+}
+
 .dropdown {
   padding: 0 3%;
   display: flex;

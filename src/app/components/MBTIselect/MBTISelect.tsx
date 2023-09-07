@@ -14,6 +14,7 @@ import {
 } from '@mui/material';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+
 import './styles.css';
 
 export interface MBTISelectProps {
@@ -23,7 +24,19 @@ export interface MBTISelectProps {
   checkedCallback: (mbti: keyof MBTI, checked: boolean) => void;
 }
 
-export const MBTISelect = ({ props }: { props: MBTISelectProps[] }) => {
+// if false, a grid is used
+// if true, a column is used
+type column = {
+  isColumn: boolean;
+};
+
+export const MBTISelect = ({
+  props,
+  column,
+}: {
+  props: MBTISelectProps[];
+  column?: column;
+}) => {
   const { breakpoints } = useContext(MediaQueryContext);
   const [open, setOpen] = useState(true);
 
@@ -36,8 +49,16 @@ export const MBTISelect = ({ props }: { props: MBTISelectProps[] }) => {
   }, [breakpoints.mobile]);
 
   return (
-    <div className='vertical-select-outer'>
-      <div className='dropdown'>
+    <div
+      className='vertical-select-outer'
+      style={column?.isColumn ? undefined : { width: '100% !important' }}
+    >
+      <div
+        className='dropdown'
+        style={
+          column?.isColumn ? undefined : { alignSelf: 'center !important' }
+        }
+      >
         <Typography
           className='vertical-select-title bold description'
           color='primary'
@@ -54,7 +75,19 @@ export const MBTISelect = ({ props }: { props: MBTISelectProps[] }) => {
         </IconButton>
       </div>
       <Collapse in={open} className='vertical-select-container'>
-        <div className='vertical-select'>
+        <div
+          className='vertical-select'
+          style={
+            column?.isColumn
+              ? undefined
+              : {
+                  display: 'grid !important',
+                  gridTemplateColumns:
+                    'repeat(auto-fill, minmax(150px, 1fr)) !important',
+                  gridColumnGap: '5vw !important',
+                }
+          }
+        >
           {props.map((child, idx) => (
             <FormControl className='vertical-select-item' key={idx}>
               {breakpoints.mobile ? (

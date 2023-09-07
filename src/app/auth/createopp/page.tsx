@@ -11,13 +11,16 @@ import {
 
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
+import { selectProps } from '@/app/organisations/selectProps';
+import MBTISelect from '@/app/components/MBTIselect/MBTISelect';
+import { MBTI } from '@/app/types';
 import { AddOppValidation } from './Validation';
 import { AccountDetails } from '@/app/types';
 import { ThemeWrapper } from '@/app/ThemeWrapper';
 import { MediaQueryContext } from '@/app/components/Providers/MediaQueryProvider';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Image from 'next/image';
-import { useContext, useRef, useState, useEffect } from 'react';
+import { useContext, useRef, useState, useEffect, use } from 'react';
 import './styles.css';
 
 export interface OppDetails
@@ -25,11 +28,29 @@ export interface OppDetails
   opp_logo: FileList;
   opp_name: string;
   opp_desc: string;
+  opp_short_desc: string;
 }
 
-export const LoginPage = () => {
+export const CreateOpp = () => {
   const { theming } = useContext(MediaQueryContext);
+
   const [fileURL, setFileURL] = useState<string | null>();
+
+  //handle MBTI select (no hook forms)
+
+  const [mbti, setMBTI] = useState<MBTI>({
+    E: true,
+    I: true,
+    S: true,
+    N: true,
+    T: true,
+    F: true,
+    J: true,
+    P: true,
+  });
+  const MBTIprops = selectProps((v, checked) =>
+    setMBTI({ ...mbti, [v]: checked } as MBTI),
+  );
 
   const {
     register,
@@ -51,7 +72,7 @@ export const LoginPage = () => {
   const inputRef = useRef<HTMLInputElement>(null);
 
   const handleCreateOpp = async (form: OppDetails) => {
-    console.log(form);
+    console.log(form, mbti);
   };
 
   const textFieldStyles = {
@@ -134,6 +155,9 @@ export const LoginPage = () => {
               required
             />
           </FormControl>
+          <Typography className='description' color='primary'>
+            Identity confirmation
+          </Typography>
           <FormControl id='username' className='form-control'>
             <TextField
               sx={textFieldStyles}
@@ -157,12 +181,15 @@ export const LoginPage = () => {
               required
             />
           </FormControl>
-
+          <Typography className='description' color='primary'>
+            Preferred personality types
+          </Typography>
+          <MBTISelect props={MBTIprops} column={{ isColumn: false }} />
           <Button
             variant='contained'
             color='primary'
             type='submit'
-            className='submit-button button'
+            className='submit-button common-button button'
           >
             <Typography noWrap>Let's go!</Typography>
           </Button>
@@ -172,5 +199,5 @@ export const LoginPage = () => {
   );
 };
 
-LoginPage.displayName = 'LoginPage';
-export default LoginPage;
+CreateOpp.displayName = 'LoginPage';
+export default CreateOpp;
