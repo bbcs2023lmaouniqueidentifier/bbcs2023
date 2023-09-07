@@ -7,12 +7,24 @@ import { CircularProgress, Typography } from '@mui/material';
 
 export const LevelCircle = forwardRef<HTMLDivElement, User & JSXProps>(
   ({ hours, username, className, id }: User & JSXProps, ref) => {
-    const level = Math.log2(hours);
-    const fullnessBar = level % 1.0;
+    //AP to calc level
+    const formula = (x: number) => {
+      const commonDifference = 5;
+      const level = Math.floor((x - 1) / commonDifference) + 1;
+      const nextLevel = level + 1;
+      const nextLevelStart = 1 + (nextLevel - 1) * commonDifference;
+      const distanceToNextLevel = nextLevelStart - x;
+      const percentageToNextLevel = distanceToNextLevel / commonDifference;
+
+      return { level, percentageToNextLevel, distanceToNextLevel };
+    };
+    const { level, percentageToNextLevel, distanceToNextLevel } =
+      formula(hours);
+
     const levelString = Math.floor(level).toString();
 
     return (
-      <>
+      <div>
         <div
           className={`level-circle-container ${className}`}
           ref={ref}
@@ -20,7 +32,7 @@ export const LevelCircle = forwardRef<HTMLDivElement, User & JSXProps>(
         >
           <CircularProgress
             variant='determinate'
-            value={fullnessBar * 100}
+            value={percentageToNextLevel * 100}
             className='level-circle'
             size={'100%'}
             color='secondary'
@@ -39,7 +51,7 @@ export const LevelCircle = forwardRef<HTMLDivElement, User & JSXProps>(
         </div>
         <div>
           <Typography
-            className='level title'
+            className='level subtitle'
             color='primary'
             variant='caption'
             component='div'
@@ -47,8 +59,27 @@ export const LevelCircle = forwardRef<HTMLDivElement, User & JSXProps>(
           >
             {username}
           </Typography>
+          <Typography
+            className='level description'
+            color='primary'
+            variant='caption'
+            component='div'
+            align='center'
+          >
+            <span className='emphasis'>{hours}</span> hours of volunteering
+          </Typography>
+          <Typography
+            className='level description'
+            color='primary'
+            variant='caption'
+            component='div'
+            align='center'
+          >
+            <span className='emphasis'>{distanceToNextLevel}</span> hours to
+            next level
+          </Typography>
         </div>
-      </>
+      </div>
     );
   },
 );

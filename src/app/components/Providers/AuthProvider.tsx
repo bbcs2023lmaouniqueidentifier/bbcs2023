@@ -1,17 +1,9 @@
+import { MBTI } from "@/app/types";
 export interface User {
   username: string;
   email: string;
   hours: number;
-  mbti: {
-    E: boolean;
-    I: boolean;
-    S: boolean;
-    N: boolean;
-    T: boolean;
-    F: boolean;
-    J: boolean;
-    P: boolean;
-  };
+  mbti: MBTI;
 }
 
 //MBTI values must add up to 1
@@ -19,7 +11,7 @@ export interface User {
 export const testUser: User = {
   username: 'john tan',
   email: 'fuckyou@gmail.com',
-  hours: 6920123,
+  hours: 12,
   mbti: {
     E: true,
     I: false,

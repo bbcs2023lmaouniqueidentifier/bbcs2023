@@ -1,6 +1,20 @@
 .leaderboard {
+  padding: 5%;
+}
+
+.leaderboard-content {
+  padding: 5% 0;
+  display: grid;
+  grid-template-columns: 1fr 2fr;
 }
 
 .level {
-  width: 20vw !important;
+  width: 20vw ;
+  align-items: center;
+}
+
+.sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 5rem;
 }

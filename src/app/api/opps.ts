@@ -3,7 +3,12 @@ export const getOpps = async () => {
     cache: 'no-store',
     method: 'GET',
   });
-  return resp.status == 200;
+
+  if (resp.status !== 200) {
+    throw new Error(resp.statusText);
+  }
+
+  return resp.body;
 };
 
 export const addOpps = async () => {
