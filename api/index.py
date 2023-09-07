@@ -4,6 +4,7 @@ from time import time
 
 import os
 import sys
+from itertools import product
 
 sys.path.append(os.getcwd())
 from database.boot import db_connector
@@ -291,6 +292,12 @@ def assignmbtis():
     passwd = get_json()["password"]
     opp = get_json()["oppname"]
     mbtis = get_json()["mbtis"]
+    mbtis_parsed = product(
+        [k for k in "EI" if k in mbtis],
+        [k for k in "SN" if k in mbtis],
+        [k for k in "TF" if k in mbtis],
+        [k for k in "JP" if k in mbtis]
+    )
 
     conn = conn_mk()
     cur = conn.cursor()
@@ -306,7 +313,7 @@ def assignmbtis():
             status = 401
             raise Exception
         delete(cur, "MbtiMatch", f"MbtiMatchOName='{opp}'")
-        for mbti in mbtis:
+        for mbti in mbtis_parsed:
             insert_row(cur, "MbtiMatch", "MbtiMatchOName, MbtiCat", (opp, mbti))
         status = 200
     except BadUsernameException:
