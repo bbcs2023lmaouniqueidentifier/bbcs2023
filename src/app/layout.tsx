@@ -2,6 +2,7 @@ import './globals.css';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
 import { MediaQueryProvider } from './components/Providers/MediaQueryProvider';
+import { AuthProvider } from './components/Providers/AuthProvider';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -22,7 +23,9 @@ export default function RootLayout({
   return (
     <html lang='en'>
       <body className={inter.className}>
-        <MediaQueryProvider>{children}</MediaQueryProvider>
+        <AuthProvider>
+          <MediaQueryProvider>{children}</MediaQueryProvider>
+        </AuthProvider>
       </body>
     </html>
   );

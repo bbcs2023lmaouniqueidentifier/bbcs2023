@@ -1,12 +1,5 @@
 'use client';
-import {
-  Box,
-  Button,
-  FormControl,
-  TextField,
-  Stack,
-  Typography,
-} from '@mui/material';
+import { Button, FormControl, TextField, Typography } from '@mui/material';
 import Link from 'next/link';
 import Image from 'next/image';
 import { useForm } from 'react-hook-form';
@@ -15,6 +8,7 @@ import { SignInValidation } from './Validation';
 import { AccountDetails } from '@/app/types';
 import { ThemeWrapper } from '@/app/ThemeWrapper';
 import { MediaQueryContext } from '@/app/components/Providers/MediaQueryProvider';
+import { AuthContext } from '@/app/components/Providers/AuthProvider';
 import { useContext } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 import { AlertProps } from '@/app/components/AlertToast/AlertToast';
@@ -23,6 +17,7 @@ import { authorise } from '@/app/api/auth';
 
 export const LoginPage = () => {
   const { theming, breakpoints } = useContext(MediaQueryContext);
+  const { login } = useContext(AuthContext);
   const router = useRouter();
   const pathname = usePathname();
   const {
@@ -36,26 +31,25 @@ export const LoginPage = () => {
   const handleLogin = async (
     form: Omit<AccountDetails, 'email' | 'repeat_password'>,
   ) => {
-    authorise(form).then((authed) => {
-      if (authed) {
-        const alertContentRedirect: AlertProps = {
-          severity: 'success',
-          title: 'Login successful!',
-          description: 'Redirecting you to the home page...',
-        };
-        router.push(`/?alertContent=${JSON.stringify(alertContentRedirect)}`);
-      } else {
-        const alertContent: AlertProps = {
-          severity: 'error',
-          title: 'Login failed!',
-          description: 'Please try again.',
-        };
-        router.replace(
-          `${pathname}?alertContent=${JSON.stringify(alertContent)}`,
-        );
-      }
-      console.log(authed ? 'LOGIN OK' : 'LOGIN FAILED');
-    });
+    const res = await login(form);
+
+    if (res === 200) {
+      const alertContentRedirect: AlertProps = {
+        severity: 'success',
+        title: 'Login successful!',
+        description: 'Redirecting you to the home page...',
+      };
+      router.push(`/?alertContent=${JSON.stringify(alertContentRedirect)}`);
+    } else {
+      const alertContent: AlertProps = {
+        severity: 'error',
+        title: 'Login failed!',
+        description: 'Please try again.',
+      };
+      router.replace(
+        `${pathname}?alertContent=${JSON.stringify(alertContent)}`,
+      );
+    }
   };
 
   const textFieldStyles = {

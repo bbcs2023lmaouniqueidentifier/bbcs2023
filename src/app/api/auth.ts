@@ -9,7 +9,12 @@ export const registerAccount = async (
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(form),
   });
-  return resp.status == 200;
+
+  if (!resp.ok) {
+    throw new Error(resp.statusText);
+  }
+
+  return resp.json();
 };
 
 export const authorise = async (
@@ -21,7 +26,11 @@ export const authorise = async (
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(form),
   });
-  return resp.status == 200;
+  if (!resp.ok) {
+    throw new Error(resp.statusText);
+  }
+
+  return resp.json();
 };
 
 export const emailChange = async (

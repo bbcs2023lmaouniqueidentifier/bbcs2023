@@ -1,4 +1,4 @@
-import React, { ForwardRefExoticComponent } from 'react';
+import { ReactNode } from 'react';
 
 export type MBTI = {
   E: boolean;
@@ -11,8 +11,10 @@ export type MBTI = {
   P: boolean;
 };
 
+export type MBTIKeys = keyof MBTI;
+
 export interface JSXProps {
-  children?: React.ReactNode;
+  children?: ReactNode;
   className?: string;
   id?: string;
 }

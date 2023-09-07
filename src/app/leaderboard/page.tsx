@@ -16,7 +16,7 @@ import {
 import { LevelCircle } from '../components/LevelCircle/LevelCircle';
 import { AddHours } from '../components/AddHours/AddHours';
 import { testUser } from '../components/Providers/AuthProvider';
-import {MBTI} from '@/app/types';
+import { MBTI } from '@/app/types';
 
 import './styles.css';
 
@@ -30,18 +30,16 @@ export const Leaderboard = () => {
   };
 
   const parseMBTI = (mbti: MBTI) => {
-    return(
+    return (
       (mbti.E ? 'E' : 'I') +
-    (mbti.S ? 'S' : 'N') +
-    (mbti.T ? 'T' : 'F') +
-    (mbti.J ? 'J' : 'P') 
-    )
-    
-  }
+      (mbti.S ? 'S' : 'N') +
+      (mbti.T ? 'T' : 'F') +
+      (mbti.J ? 'J' : 'P')
+    );
+  };
 
   const testUsers = [testUser, testUser, testUser, testUser, testUser];
   //REMEMBER TO SORT BY HOURS
-
 
   return (
     <ThemeWrapper darkTheme={theming.darkMode}>
@@ -62,29 +60,31 @@ export const Leaderboard = () => {
           <div className='leaderboard-leaderboard'>
             <TableContainer component={Paper}>
               <Table>
-              <TableHead>
-                <TableRow>
-                  <TableCell>Rank</TableCell>
-                  <TableCell align='right'>Name</TableCell>
-                  <TableCell align='right'>Level</TableCell>
-                  <TableCell align='right'>Hours</TableCell>
-                  <TableCell align='right'>MBTI</TableCell>
-                </TableRow>
-              </TableHead>
-              <TableBody>
-                {testUsers.map((user, index) => (
-                  <TableRow key={index}>
-                    <TableCell component='th' scope='row'>
-                      {index + 1}
-                    </TableCell>
-                    <TableCell align='right'>{user.username}</TableCell>
-                    <TableCell align='right'>{formula(user.hours)}</TableCell>
-                    <TableCell align='right'>{user.hours}</TableCell>
-                    <TableCell align='right'>{parseMBTI(user.mbti)}</TableCell>
+                <TableHead>
+                  <TableRow>
+                    <TableCell>Rank</TableCell>
+                    <TableCell align='right'>Name</TableCell>
+                    <TableCell align='right'>Level</TableCell>
+                    <TableCell align='right'>Hours</TableCell>
+                    <TableCell align='right'>MBTI</TableCell>
                   </TableRow>
-                ))}
-              </TableBody>
-            </Table>
+                </TableHead>
+                <TableBody>
+                  {testUsers.map((user, index) => (
+                    <TableRow key={index}>
+                      <TableCell component='th' scope='row'>
+                        {index + 1}
+                      </TableCell>
+                      <TableCell align='right'>{user.username}</TableCell>
+                      <TableCell align='right'>{formula(user.hours)}</TableCell>
+                      <TableCell align='right'>{user.hours}</TableCell>
+                      <TableCell align='right'>
+                        {parseMBTI(user.mbti)}
+                      </TableCell>
+                    </TableRow>
+                  ))}
+                </TableBody>
+              </Table>
             </TableContainer>
           </div>
         </div>

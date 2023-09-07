@@ -56,6 +56,10 @@ def register():
                 "UserName, UserEmail, UserPwHash, UserPwSalt, UserHours, UserHoursUpdate, UserMbti",
                 (uname, email, pwhash, salt(), 0, 0, ""),
             )
+            
+            select(cur, "Users", "UserEmail, UserHours, UserMbti", f"UserName='{uname}'")
+            email, hours, mbti = cur.fetchone()
+            ret = {"username": uname, "email": email, "hours": hours, "mbti": mbti}
             status = 200
         else:
             status = 409
@@ -65,7 +69,9 @@ def register():
     conn.commit()
     cur.close()
     conn.close()
-    return jsonify({}), status
+    if status != 200:
+        return jsonify({}), status
+    return jsonify(ret), status
 
 
 def check_password(cur, uname, passwd):
@@ -89,11 +95,11 @@ def login():
     ret = {}
     try:
         status = 200 if check_password(cur, uname, passwd) else 401
-    except BadUsernameException:
-        status = 401
         select(cur, "Users", "UserEmail, UserHours, UserMbti", f"UserName='{uname}'")
         email, hours, mbti = cur.fetchone()
         ret = {"username": uname, "email": email, "hours": hours, "mbti": mbti}
+    except BadUsernameException:
+        status = 401    
     except Exception:
         status = 401  # ???
     cur.close()
