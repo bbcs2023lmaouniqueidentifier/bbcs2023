@@ -38,12 +38,12 @@ export interface AuthContextType {
     details: Omit<AccountDetails, 'email' | 'repeat_password'> & {
       newemail: string;
     },
-  ) => Promise<void>;
+  ) => Promise<number>;
   changepw: (
     details: Omit<AccountDetails, 'email' | 'repeat_password'> & {
       newpassword: string;
     },
-  ) => Promise<void>;
+  ) => Promise<number>;
   registerUserAccount: (accountDetails: AccountDetails) => Promise<number>;
 }
 
@@ -70,8 +70,8 @@ export const AuthContext = createContext<AuthContextType>({
   isLoading: true,
   login: async () => 0,
   logout: () => {},
-  changeemail: async () => {},
-  changepw: async () => {},
+  changeemail: async () => 0,
+  changepw: async () => 0,
   registerUserAccount: async () => 0,
 });
 
@@ -120,7 +120,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         return 500;
       }
     },
-    [],
+    [user],
   );
 
   const logout = useCallback(() => {
@@ -129,22 +129,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const changeemail = useCallback(
-    async (
-      details: Omit<AccountDetails, 'email' | 'repeat_password'> & {
+    async (details: Omit<AccountDetails, 'email' | 'repeat_password'> & {
         newemail: string;
       },
     ) => {
+      console.log(user)
       if (!user) throw new Error('User not logged in');
       try {
         await emailChange({ ...details, username: user.username });
         const updatedUser = { ...user, email: details.newemail };
         setUser(updatedUser);
         localStorage.setItem('user', JSON.stringify(updatedUser));
+        return 200;
       } catch (error) {
-        throw error;
+        console.log(error);
+        return 500;
       }
     },
-    [],
+    [user],
   );
 
   const changepw = useCallback(
@@ -160,11 +162,14 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           newpassword: details.newpassword,
           password: details.password,
         });
+        return 200;
       } catch (error) {
-        throw error;
+        console.log(error);
+        
       }
+      return 500;
     },
-    [],
+    [user],
   );
   const registerUserAccount = useCallback(
     async (accountDetails: AccountDetails): Promise<number> => {
@@ -200,7 +205,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
       return 500;
     },
-    [],
+    [user],
   );
 
   const providerValue = useMemo(

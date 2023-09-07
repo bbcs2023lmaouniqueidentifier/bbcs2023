@@ -1,16 +1,18 @@
 import { Button, TextField, Typography } from '@mui/material';
-import { emailChange } from '@/app/api/auth';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ChangeEmailValidation } from './Validation';
 import { AlertProps } from '@/app/components/AlertToast/AlertToast';
 import { useRouter, usePathname } from 'next/navigation';
 import './styles.css';
-import { User } from '@/app/components/Providers/AuthProvider';
+import { AuthContext, User } from '@/app/components/Providers/AuthProvider';
+import { useContext } from 'react';
 
-export const ChangeEmail = ({ user }: { user: User }) => {
+export const ChangeEmail = ({ user }: { user: User | null }) => {
+  if (!user) return null;
   const router = useRouter();
   const pathname = usePathname();
+  const { changeemail } = useContext(AuthContext);
   const {
     register,
     handleSubmit,
@@ -19,28 +21,31 @@ export const ChangeEmail = ({ user }: { user: User }) => {
     resolver: yupResolver(ChangeEmailValidation),
   });
 
-  const handleChangeEmail = (data: { newemail: string; password: string }) => {
-    emailChange({ ...data, username: user.username }).then((res) => {
-      if (res) {
-        const alertContentRedirect: AlertProps = {
-          severity: 'success',
-          title: 'Change successful!',
-          description: 'You have changed your email.',
-        };
-        router.push(
-          `${pathname}?alertContent=${JSON.stringify(alertContentRedirect)}`,
-        );
-      } else {
-        const alertContent: AlertProps = {
-          severity: 'error',
-          title: 'Change failed!',
-          description: 'Please try again.',
-        };
-        router.replace(
-          `${pathname}?alertContent=${JSON.stringify(alertContent)}`,
-        );
-      }
-    });
+  const handleChangeEmail = async (data: {
+    newemail: string;
+    password: string;
+  }) => {
+    const res = await changeemail({ ...data, username: user.username });
+
+    if (res === 200) {
+      const alertContentRedirect: AlertProps = {
+        severity: 'success',
+        title: 'Change successful!',
+        description: 'You have changed your email.',
+      };
+      router.push(
+        `${pathname}?alertContent=${JSON.stringify(alertContentRedirect)}`,
+      );
+    } else {
+      const alertContent: AlertProps = {
+        severity: 'error',
+        title: 'Change failed!',
+        description: 'Please try again.',
+      };
+      router.replace(
+        `${pathname}?alertContent=${JSON.stringify(alertContent)}`,
+      );
+    }
   };
 
   return (

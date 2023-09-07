@@ -15,7 +15,8 @@ import { MediaQueryContext } from './components/Providers/MediaQueryProvider';
 import { darkThemeOptions, lightThemeOptions } from './themes';
 import Navbar from './components/Navbar/Navbar';
 import { AlertToast, AlertProps } from './components/AlertToast/AlertToast';
-import { useSearchParams, useRouter } from 'next/navigation';
+import { useSearchParams, useRouter, usePathname } from 'next/navigation';
+
 
 type ThemeWrapperProps = {
   children: ReactNode;
@@ -29,6 +30,7 @@ export const ThemeWrapper = ({ children, darkTheme }: ThemeWrapperProps) => {
   const [openAlert, setOpenAlert] = useState<boolean>(false);
   const searchParams = useSearchParams();
   const router = useRouter();
+  const pathname = usePathname();
 
   const { theming } = useContext(MediaQueryContext);
   const [isDark, setIsDark] = useState<boolean>(theming.darkMode);
@@ -122,7 +124,7 @@ export const ThemeWrapper = ({ children, darkTheme }: ThemeWrapperProps) => {
           <div ref={childrenRef}>{children}</div>
           <AlertToast
             openAlert={openAlert}
-            onClose={() => setOpenAlert(false)}
+            onClose={() => {setOpenAlert(false); router.push(pathname);}}
             alertContent={alertContent}
           />
         </div>

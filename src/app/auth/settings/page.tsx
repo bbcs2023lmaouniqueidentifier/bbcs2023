@@ -3,16 +3,36 @@ import ThemeWrapper from '@/app/ThemeWrapper';
 import { useContext, useEffect, useState } from 'react';
 import { MediaQueryContext } from '@/app/components/Providers/MediaQueryProvider';
 import { Button } from '@mui/material';
-import { Typography, Slider, Badge, TextField } from '@mui/material';
+import { Typography, Slider, Badge } from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
-import { testUser } from '@/app/components/Providers/AuthProvider';
-
+import { AuthContext } from '@/app/components/Providers/AuthProvider';
 import './styles.css';
 import { ChangeEmail } from './ChangeEmail';
 import { ChangePassword } from './ChangePassword';
+import { useRouter } from 'next/navigation';
+import { User } from '@/app/components/Providers/AuthProvider';
+import { AlertProps } from '@/app/components/AlertToast/AlertToast';
+
+
 
 export const Settings = () => {
   const { theming } = useContext(MediaQueryContext);
+  const { user, isLoading } = useContext(AuthContext);
+  const router = useRouter();
+  useEffect(() => {
+    if (!isLoading && !user) {
+      const alertContentRedirect: AlertProps = {
+        severity: 'error',
+        title: 'You have not logged in',
+        description: 'Please log in to access this page.',
+      };
+      router.push(
+        `/?alertContent=${JSON.stringify(alertContentRedirect)}`,
+      );
+    }
+  }, [isLoading, user])
+  
+
   const [fontScale, setFontScale] = useState<number>();
   const [darkMode, setDarkMode] = useState<boolean>();
   useEffect(() => {
@@ -163,11 +183,11 @@ export const Settings = () => {
             <Typography className='description bold' color='primary'>
               Change Email
             </Typography>
-            <ChangeEmail user={testUser} />
+            <ChangeEmail user={user} />
             <Typography className='description bold' color='primary'>
               Change Password
             </Typography>
-            <ChangePassword user={testUser} />
+            <ChangePassword user={user} />
           </div>
         </section>
       </div>

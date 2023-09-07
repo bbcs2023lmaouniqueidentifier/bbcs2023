@@ -1,16 +1,20 @@
 import { Button, TextField, Typography } from '@mui/material';
-import { passwordChange } from '@/app/api/auth';
+
+import { AuthContext, User } from '@/app/components/Providers/AuthProvider';
+import { useContext } from 'react';
 import { AlertProps } from '@/app/components/AlertToast/AlertToast';
 import { useRouter, usePathname } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ChangePasswordValidation } from './Validation';
 import './styles.css';
-import { User } from '@/app/components/Providers/AuthProvider';
 
-export const ChangePassword = ({ user }: { user: User }) => {
+export const ChangePassword = ({ user }: { user: User | null }) => {
+  if (!user) return null;
   const router = useRouter();
   const pathname = usePathname();
+  const { changepw } = useContext(AuthContext);
+
   const {
     register,
     handleSubmit,
@@ -19,13 +23,13 @@ export const ChangePassword = ({ user }: { user: User }) => {
     resolver: yupResolver(ChangePasswordValidation),
   });
 
-  const handleChangePw = (data: {
+  const handleChangePw = async (data: {
     old_password: string;
     password: string;
     newpassword: string;
   }) => {
-    passwordChange({ ...data, username: user.username }).then((res) => {
-      if (res) {
+    const res = await changepw({ ...data, username: user.username })
+      if (res === 200) {
         const alertContentRedirect: AlertProps = {
           severity: 'success',
           title: 'Change successful!',
@@ -44,7 +48,7 @@ export const ChangePassword = ({ user }: { user: User }) => {
           `${pathname}?alertContent=${JSON.stringify(alertContent)}`,
         );
       }
-    });
+    
   };
 
   return (
