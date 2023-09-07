@@ -66,3 +66,14 @@ export const passwordChange = async (
   );
   return resp.status == 200;
 };
+
+export const updateMBTI = async (username: string, mbti: string) => {
+  const body = { username, newmbti: mbti };
+  const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/usermbti`, {
+    cache: 'no-store',
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  return resp.status == 200;
+};

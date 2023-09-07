@@ -129,14 +129,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   }, []);
 
   const changeemail = useCallback(
-    async (details: Omit<AccountDetails, 'email' | 'repeat_password'> & {
+    async (
+      details: Omit<AccountDetails, 'email' | 'repeat_password'> & {
         newemail: string;
       },
     ) => {
-      console.log(user)
       if (!user) throw new Error('User not logged in');
       try {
-        await emailChange({ ...details, username: user.username });
+        const res = await emailChange({ ...details, username: user.username });
+        if (!res) throw new Error('Change email failed');
         const updatedUser = { ...user, email: details.newemail };
         setUser(updatedUser);
         localStorage.setItem('user', JSON.stringify(updatedUser));
@@ -157,15 +158,15 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     ) => {
       if (!user) throw new Error('User not logged in');
       try {
-        await passwordChange({
+        const res = await passwordChange({
           ...user,
           newpassword: details.newpassword,
           password: details.password,
         });
+        if (!res) throw new Error('Change password failed');
         return 200;
       } catch (error) {
         console.log(error);
-        
       }
       return 500;
     },

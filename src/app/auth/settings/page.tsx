@@ -2,23 +2,44 @@
 import ThemeWrapper from '@/app/ThemeWrapper';
 import { useContext, useEffect, useState } from 'react';
 import { MediaQueryContext } from '@/app/components/Providers/MediaQueryProvider';
-import { Button } from '@mui/material';
-import { Typography, Slider, Badge } from '@mui/material';
+import {
+  Typography,
+  Slider,
+  Badge,
+  FormControl,
+  InputLabel,
+  Select,
+  Button,
+  MenuItem,
+} from '@mui/material';
 import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 import { AuthContext } from '@/app/components/Providers/AuthProvider';
 import './styles.css';
 import { ChangeEmail } from './ChangeEmail';
 import { ChangePassword } from './ChangePassword';
 import { useRouter } from 'next/navigation';
-import { User } from '@/app/components/Providers/AuthProvider';
 import { AlertProps } from '@/app/components/AlertToast/AlertToast';
-
-
+import { updateMBTI } from '@/app/api/auth';
 
 export const Settings = () => {
   const { theming } = useContext(MediaQueryContext);
   const { user, isLoading } = useContext(AuthContext);
   const router = useRouter();
+
+  const [EI, setEI] = useState<'E' | 'I' | ''>('');
+  const [SN, setSN] = useState<'S' | 'N' | ''>('');
+  const [TF, setTF] = useState<'T' | 'F' | ''>('');
+  const [JP, setJP] = useState<'J' | 'P' | ''>('');
+
+  useEffect(() => {
+    if (user && !Object.values(user.mbti).every((value) => value === false)) {
+      setEI(user.mbti.E ? 'E' : 'I');
+      setSN(user.mbti.S ? 'S' : 'N');
+      setTF(user.mbti.T ? 'T' : 'F');
+      setJP(user.mbti.J ? 'J' : 'P');
+    }
+  }, [user]);
+
   useEffect(() => {
     if (!isLoading && !user) {
       const alertContentRedirect: AlertProps = {
@@ -26,12 +47,9 @@ export const Settings = () => {
         title: 'You have not logged in',
         description: 'Please log in to access this page.',
       };
-      router.push(
-        `/?alertContent=${JSON.stringify(alertContentRedirect)}`,
-      );
+      router.push(`/?alertContent=${JSON.stringify(alertContentRedirect)}`);
     }
-  }, [isLoading, user])
-  
+  }, [isLoading, user]);
 
   const [fontScale, setFontScale] = useState<number>();
   const [darkMode, setDarkMode] = useState<boolean>();
@@ -52,6 +70,25 @@ export const Settings = () => {
   const handleFontSizeChange = () => {
     localStorage.setItem('fontscale', fontScale?.toString() || '1');
     window.location.reload();
+  };
+
+  const handleMBTIChange = () => {
+    const newMBTI = {
+      E: EI === 'E',
+      I: EI === 'I',
+      S: SN === 'S',
+      N: SN === 'N',
+      T: TF === 'T',
+      F: TF === 'F',
+      J: JP === 'J',
+      P: JP === 'P',
+    };
+    const newUser = { ...user, mbti: newMBTI };
+    localStorage.setItem('user', JSON.stringify(newUser));
+    const parsedMBTI = Object.entries(newMBTI)
+      .map(([key, value]) => (value ? key : ''))
+      .join('');
+    updateMBTI(user!.username, parsedMBTI);
   };
 
   return (
@@ -188,6 +225,59 @@ export const Settings = () => {
               Change Password
             </Typography>
             <ChangePassword user={user} />
+            <Typography className='description bold' color='primary'>
+              Update personality type
+            </Typography>
+            <div className='update-mbti' id='mbti'>
+              <FormControl className='update-mbti-dropdown'>
+                <InputLabel htmlFor='EI'>EI</InputLabel>
+                <Select
+                  value={EI}
+                  onChange={(e) => setEI(e.target.value as 'E' | 'I' | '')}
+                >
+                  <MenuItem value='E'>E</MenuItem>
+                  <MenuItem value='I'>I</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl className='update-mbti-dropdown'>
+                <InputLabel htmlFor='SN'>SN</InputLabel>
+                <Select
+                  value={SN}
+                  onChange={(e) => setSN(e.target.value as 'S' | 'N' | '')}
+                >
+                  <MenuItem value='S'>S</MenuItem>
+                  <MenuItem value='N'>N</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl className='update-mbti-dropdown'>
+                <InputLabel htmlFor='TF'>TF</InputLabel>
+                <Select
+                  value={TF}
+                  onChange={(e) => setTF(e.target.value as 'T' | 'F' | '')}
+                >
+                  <MenuItem value='T'>T</MenuItem>
+                  <MenuItem value='F'>F</MenuItem>
+                </Select>
+              </FormControl>
+              <FormControl className='update-mbti-dropdown'>
+                <InputLabel htmlFor='JP'>JP</InputLabel>
+                <Select
+                  value={JP}
+                  onChange={(e) => setJP(e.target.value as 'J' | 'P' | '')}
+                >
+                  <MenuItem value='J'>J</MenuItem>
+                  <MenuItem value='P'>P</MenuItem>
+                </Select>
+              </FormControl>
+              <Button
+                variant='contained'
+                color='primary'
+                className='button common-button save-btn'
+                onClick={handleMBTIChange}
+              >
+                Save
+              </Button>
+            </div>
           </div>
         </section>
       </div>

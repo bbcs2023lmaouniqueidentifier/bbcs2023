@@ -194,7 +194,6 @@ def usermbti():
         return jsonify(ret), status
     else:
         uname = get_json()["username"]
-        passwd = get_json()["password"]
         newmbti = get_json()["newmbti"]
 
         conn = conn_mk()
@@ -202,8 +201,8 @@ def usermbti():
 
         status = 500
         try:
-            corr_cred = check_password(cur, uname, passwd)
-            if corr_cred:
+            
+            
                 try:
                     update(
                         cur,
@@ -214,8 +213,7 @@ def usermbti():
                     status = 200
                 except:
                     status = 413  # probably
-            else:
-                status = 401
+            
         except BadUsernameException:
             status = 401
         except Exception:

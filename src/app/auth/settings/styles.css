@@ -103,3 +103,13 @@
   margin-top: 2vh;
   width: 90%;
 }
+
+.update-mbti {
+  display: flex;
+  margin: 2vh 0;
+  gap: 3vw;
+}
+
+.update-mbti-dropdown {
+  flex-grow: 1;
+}

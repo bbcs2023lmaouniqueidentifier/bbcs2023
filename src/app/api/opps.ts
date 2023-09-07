@@ -8,7 +8,7 @@ export const getOpps = async () => {
     throw new Error(resp.statusText);
   }
 
-  return resp.body;
+  return resp.json();
 };
 
 export const addOpps = async () => {

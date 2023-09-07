@@ -13,6 +13,7 @@ import {
   Paper,
   Tab,
 } from '@mui/material';
+import { AuthContext } from '../components/Providers/AuthProvider';
 import { LevelCircle } from '../components/LevelCircle/LevelCircle';
 import { AddHours } from '../components/AddHours/AddHours';
 import { testUser } from '../components/Providers/AuthProvider';
@@ -22,7 +23,8 @@ import './styles.css';
 
 export const Leaderboard = () => {
   const { theming } = useContext(MediaQueryContext);
-
+  const { user } = useContext(AuthContext);
+  if (!user) return null;
   const formula = (x: number) => {
     const commonDifference = 5;
     const level = Math.floor((x - 1) / commonDifference) + 1;
@@ -30,6 +32,8 @@ export const Leaderboard = () => {
   };
 
   const parseMBTI = (mbti: MBTI) => {
+    if (Object.values(mbti).every((value) => value === false)) return '';
+
     return (
       (mbti.E ? 'E' : 'I') +
       (mbti.S ? 'S' : 'N') +
@@ -38,7 +42,7 @@ export const Leaderboard = () => {
     );
   };
 
-  const testUsers = [testUser, testUser, testUser, testUser, testUser];
+  const testUsers = [user, user, user, user, user];
   //REMEMBER TO SORT BY HOURS
 
   return (

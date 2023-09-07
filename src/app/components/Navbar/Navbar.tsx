@@ -53,7 +53,7 @@ export const Navbar = forwardRef<HTMLDivElement, JSXProps>((props, ref) => {
                 </a>
                 <a
                   className='navbar-link description'
-                  onClick={() => router.push('/auth/settings#account')}
+                  onClick={() => router.push('/auth/settings#mbti')}
                 >
                   My MBTI
                 </a>
@@ -100,7 +100,7 @@ export const Navbar = forwardRef<HTMLDivElement, JSXProps>((props, ref) => {
                   </Button>
                   <Button
                     className='navbar-mobile-dropdown-button'
-                    onClick={() => router.push('/auth/settings')}
+                    onClick={() => router.push('/auth/settings#mbti')}
                   >
                     <Typography>My MBTI</Typography>
                   </Button>

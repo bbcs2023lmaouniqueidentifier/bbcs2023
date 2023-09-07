@@ -8,9 +8,9 @@ export const ChangeEmailValidation = Yup.object().shape({
 });
 
 export const ChangePasswordValidation = Yup.object().shape({
-  old_password: Yup.string().required('Old Password is required'),
+  password: Yup.string().required('Old Password is required'),
 
-  password: Yup.string()
+  newpassword: Yup.string()
     .matches(
       /[!@#$%^&*]/,
       'Password must contain a special character (!@#$%^&*)',
@@ -20,7 +20,7 @@ export const ChangePasswordValidation = Yup.object().shape({
     .max(30, 'Password cannot exceed 30 characters')
     .required('Password is required'),
 
-  newpassword: Yup.string()
-    .oneOf([Yup.ref('password'), undefined], 'Passwords must match')
+  repeat_newpassword: Yup.string()
+    .oneOf([Yup.ref('newpassword'), undefined], 'Passwords must match')
     .required('Repeat password is required'),
 });

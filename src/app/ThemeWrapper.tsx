@@ -17,7 +17,6 @@ import Navbar from './components/Navbar/Navbar';
 import { AlertToast, AlertProps } from './components/AlertToast/AlertToast';
 import { useSearchParams, useRouter, usePathname } from 'next/navigation';
 
-
 type ThemeWrapperProps = {
   children: ReactNode;
   darkTheme: boolean;
@@ -124,7 +123,10 @@ export const ThemeWrapper = ({ children, darkTheme }: ThemeWrapperProps) => {
           <div ref={childrenRef}>{children}</div>
           <AlertToast
             openAlert={openAlert}
-            onClose={() => {setOpenAlert(false); router.push(pathname);}}
+            onClose={() => {
+              setOpenAlert(false);
+              router.push(pathname);
+            }}
             alertContent={alertContent}
           />
         </div>
