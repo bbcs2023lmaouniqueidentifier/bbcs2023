@@ -1,6 +1,6 @@
 'use client';
 import ThemeWrapper from '../ThemeWrapper';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { MediaQueryContext } from '../components/Providers/MediaQueryProvider';
 import {
   Typography,
@@ -13,17 +13,20 @@ import {
   Paper,
   Tab,
 } from '@mui/material';
-import { AuthContext } from '../components/Providers/AuthProvider';
+import { AuthContext, User } from '../components/Providers/AuthProvider';
 import { LevelCircle } from '../components/LevelCircle/LevelCircle';
 import { AddHours } from '../components/AddHours/AddHours';
-import { testUser } from '../components/Providers/AuthProvider';
 import { MBTI } from '@/app/types';
+import { getUsers } from '../api/auth';
 
 import './styles.css';
 
 export const Leaderboard = () => {
   const { theming } = useContext(MediaQueryContext);
   const { user } = useContext(AuthContext);
+  const [users, setUsers] = useState<
+    { username: string; hours: number }[] | null
+  >(null);
   if (!user) return null;
   const formula = (x: number) => {
     const commonDifference = 5;
@@ -42,8 +45,15 @@ export const Leaderboard = () => {
     );
   };
 
-  const testUsers = [user, user, user, user, user];
-  //REMEMBER TO SORT BY HOURS
+  useEffect(() => {
+    getUsers().then((res: { username: string; hours: number }[]) => {
+      res.sort((a, b) => b.hours - a.hours);
+
+      setUsers(res);
+      console.log(res);
+    });
+  }, []);
+  useEffect(() => console.log(users), [users]);
 
   return (
     <ThemeWrapper darkTheme={theming.darkMode}>
@@ -58,8 +68,8 @@ export const Leaderboard = () => {
         </div>
         <div className='leaderboard-content'>
           <div className='sidebar'>
-            <LevelCircle {...testUser} className='level' />
-            <AddHours {...testUser} className='add-hours' />
+            <LevelCircle {...user} className='level' />
+            <AddHours {...user} className='add-hours' />
           </div>
           <div className='leaderboard-leaderboard'>
             <TableContainer component={Paper}>
@@ -74,17 +84,17 @@ export const Leaderboard = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {testUsers.map((user, index) => (
+                  {users?.map((user, index) => (
                     <TableRow key={index}>
                       <TableCell component='th' scope='row'>
                         {index + 1}
                       </TableCell>
                       <TableCell align='right'>{user.username}</TableCell>
-                      <TableCell align='right'>{formula(user.hours)}</TableCell>
-                      <TableCell align='right'>{user.hours}</TableCell>
                       <TableCell align='right'>
-                        {parseMBTI(user.mbti)}
+                        {formula(Number(user.hours))}
                       </TableCell>
+                      <TableCell align='right'>{user.hours}</TableCell>
+                      <TableCell align='right'></TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

@@ -17,7 +17,7 @@ import { AuthContext } from '@/app/components/Providers/AuthProvider';
 import './styles.css';
 import { ChangeEmail } from './ChangeEmail';
 import { ChangePassword } from './ChangePassword';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import { AlertProps } from '@/app/components/AlertToast/AlertToast';
 import { updateMBTI } from '@/app/api/auth';
 
@@ -25,6 +25,7 @@ export const Settings = () => {
   const { theming } = useContext(MediaQueryContext);
   const { user, isLoading } = useContext(AuthContext);
   const router = useRouter();
+  const pathname = usePathname();
 
   const [EI, setEI] = useState<'E' | 'I' | ''>('');
   const [SN, setSN] = useState<'S' | 'N' | ''>('');
@@ -72,7 +73,7 @@ export const Settings = () => {
     window.location.reload();
   };
 
-  const handleMBTIChange = () => {
+  const handleMBTIChange = async () => {
     const newMBTI = {
       E: EI === 'E',
       I: EI === 'I',
@@ -88,7 +89,26 @@ export const Settings = () => {
     const parsedMBTI = Object.entries(newMBTI)
       .map(([key, value]) => (value ? key : ''))
       .join('');
-    updateMBTI(user!.username, parsedMBTI);
+    const res = await updateMBTI(user!.username, parsedMBTI);
+    if (res === 200) {
+      const alertContentRedirect: AlertProps = {
+        severity: 'success',
+        title: 'Change successful!',
+        description: 'You have changed your MBTI.',
+      };
+      router.push(
+        `${pathname}?alertContent=${JSON.stringify(alertContentRedirect)}`,
+      );
+    } else {
+      const alertContent: AlertProps = {
+        severity: 'error',
+        title: 'Change failed!',
+        description: 'Please try again.',
+      };
+      router.replace(
+        `${pathname}?alertContent=${JSON.stringify(alertContent)}`,
+      );
+    }
   };
 
   return (

@@ -75,5 +75,25 @@ export const updateMBTI = async (username: string, mbti: string) => {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(body),
   });
-  return resp.status == 200;
+  return resp.status;
+};
+
+export const addHours = async (username: string, hours: number) => {
+  const body = { username, extrahours: hours };
+  const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/addhours`, {
+    cache: 'no-store',
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  return resp.status;
+};
+
+export const getUsers = async () => {
+  const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/users`, {
+    cache: 'no-store',
+    method: 'GET',
+    headers: { 'Content-Type': 'application/json' },
+  });
+  return resp.json();
 };

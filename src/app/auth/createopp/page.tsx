@@ -48,7 +48,7 @@ export const CreateOpp = () => {
     J: true,
     P: true,
   });
-  const MBTIprops = selectProps((v, checked) =>
+  const MBTIprops = selectProps(mbti, (v, checked) =>
     setMBTI({ ...mbti, [v]: checked } as MBTI),
   );
 

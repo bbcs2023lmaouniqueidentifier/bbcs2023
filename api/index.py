@@ -356,7 +356,6 @@ def fetchmbtis():
 @app.route("/api/addhours", methods=["POST"])
 def addhours():
     uname = get_json()["username"]
-    passwd = get_json()["password"]
     extrahours = get_json()["extrahours"]
 
     conn = conn_mk()
@@ -364,9 +363,7 @@ def addhours():
 
     status = 500
     try:
-        if not check_password(cur, uname, passwd):
-            status = 401
-            raise Exception
+        
         select(cur, "Users", "UserHours, UserHoursUpdate", f"UserName='{uname}'")
         hours, updtime = cur.fetchone()
         if time() - updtime < 72000:

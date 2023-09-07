@@ -5,13 +5,25 @@ import { selectProps } from './selectProps';
 import { useContext } from 'react';
 import { MediaQueryContext } from '../components/Providers/MediaQueryProvider';
 import { TextField, Typography } from '@mui/material';
+import { AuthContext } from '../components/Providers/AuthProvider';
 import OrganisationCard from './OrganisationCard';
 import './styles.css';
 
 export const Organisations = () => {
   const { theming } = useContext(MediaQueryContext);
+  const { user } = useContext(AuthContext);
 
   const temp = '/volunteers/volunteer3.png';
+  const defaultMBTI = {
+    E: true,
+    I: true,
+    S: true,
+    N: true,
+    T: true,
+    F: true,
+    J: true,
+    P: true,
+  };
 
   return (
     <ThemeWrapper darkTheme={theming.darkMode}>
@@ -23,7 +35,9 @@ export const Organisations = () => {
             className='sidebar-search'
           />
           <MBTISelect
-            props={selectProps((mbti, checked) => console.log(mbti, checked))}
+            props={selectProps(user?.mbti || defaultMBTI, (mbti, checked) =>
+              console.log(mbti, checked),
+            )}
           />
         </div>
         <div>

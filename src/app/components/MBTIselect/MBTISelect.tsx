@@ -21,6 +21,7 @@ export interface MBTISelectProps {
   icon: SvgIconComponent;
   label: string;
   mbti: keyof MBTI;
+  checked: boolean;
   checkedCallback: (mbti: keyof MBTI, checked: boolean) => void;
 }
 
@@ -96,7 +97,7 @@ export const MBTISelect = ({
               <FormControlLabel
                 control={
                   <Checkbox
-                    defaultChecked
+                    defaultChecked={child.checked}
                     onChange={(e) =>
                       child.checkedCallback(child.mbti, e.target.checked)
                     }
