@@ -1,5 +1,5 @@
 'use client';
-import { VerticalSelectProps } from '../components/VerticalSelect/VerticalSelect';
+import { MBTISelectProps } from '../components/MBTIselect/MBTISelect';
 import { MBTI } from '../types';
 import MicExternalOnIcon from '@mui/icons-material/MicExternalOn';
 import HeadsetMicIcon from '@mui/icons-material/HeadsetMic';
@@ -12,7 +12,7 @@ import FlightIcon from '@mui/icons-material/Flight';
 
 type selectProps = (
   checkedCallback: (mbti: keyof MBTI, checked: boolean) => void,
-) => VerticalSelectProps[];
+) => MBTISelectProps[];
 
 export const selectProps: selectProps = (checkedCallback) => [
   {

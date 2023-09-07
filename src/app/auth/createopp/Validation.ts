@@ -12,6 +12,9 @@ export const AddOppValidation = Yup.object().shape({
 
   password: Yup.string().required('Password is required'),
   opp_name: Yup.string().required('Name of volunteer opportunity is required'),
+  opp_short_desc: Yup.string()
+    .required('Short description is required')
+    .max(100, 'Short description cannot exceed 100 characters'),
   opp_desc: Yup.string().required('Description is required'),
   opp_logo: Yup.mixed<FileList>()
     .required('Logo is required')

@@ -16,14 +16,14 @@ import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import './styles.css';
 
-export interface VerticalSelectProps {
+export interface MBTISelectProps {
   icon: SvgIconComponent;
   label: string;
   mbti: keyof MBTI;
   checkedCallback: (mbti: keyof MBTI, checked: boolean) => void;
 }
 
-export const VerticalSelect = ({ props }: { props: VerticalSelectProps[] }) => {
+export const MBTISelect = ({ props }: { props: MBTISelectProps[] }) => {
   const { breakpoints } = useContext(MediaQueryContext);
   const [open, setOpen] = useState(true);
 
@@ -81,4 +81,4 @@ export const VerticalSelect = ({ props }: { props: VerticalSelectProps[] }) => {
   );
 };
 
-export default VerticalSelect;
+export default MBTISelect;

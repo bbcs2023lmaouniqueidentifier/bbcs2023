@@ -110,13 +110,24 @@ export const LoginPage = () => {
               required
             />
           </FormControl>
-          <FormControl id='description' className='form-control'>
+          <FormControl id='opp_short_desc' className='form-control'>
+            <TextField
+              sx={textFieldStyles}
+              type='text'
+              label="Short summary (date/time/location/who you're helping)"
+              error={Boolean(errors.username)}
+              helperText={errors.username?.message}
+              {...register('opp_short_desc')}
+              required
+            />
+          </FormControl>
+          <FormControl id='opp_desc' className='form-control'>
             <TextField
               sx={textFieldStyles}
               type='text'
               multiline
               rows={6}
-              label='Description (when, where, what)'
+              label='Description'
               error={Boolean(errors.username)}
               helperText={errors.username?.message}
               {...register('opp_desc')}

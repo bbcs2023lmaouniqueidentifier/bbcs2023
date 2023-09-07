@@ -1,6 +1,6 @@
 .navbar {
   background-color: rgba(var(--background-color), 0.8);
-  backdrop-filter: blur(5px);
+  backdrop-filter: blur(5px) brightness(0.4);
 
   border-radius: 0 0 10px 10px;
   box-shadow: 0 10px 30px -10px rgba(2, 12, 27, 0.7);
@@ -30,8 +30,10 @@
 }
 
 .navbar-link {
-  color: var(--primary);
+  color: white;
   text-decoration: none;
+  text-transform: capitalize;
+  font-weight: bold;
 }
 
 .navbar-misc {

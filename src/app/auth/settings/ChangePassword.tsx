@@ -1,5 +1,7 @@
 import { Button, TextField, Typography } from '@mui/material';
-
+import { passwordChange } from '@/app/api/auth';
+import { AlertProps } from '@/app/components/AlertToast/AlertToast';
+import { useRouter, usePathname } from 'next/navigation';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ChangePasswordValidation } from './Validation';
@@ -7,6 +9,8 @@ import './styles.css';
 import { User } from '@/app/components/Providers/AuthProvider';
 
 export const ChangePassword = ({ user }: { user: User }) => {
+  const router = useRouter();
+  const pathname = usePathname();
   const {
     register,
     handleSubmit,
@@ -15,8 +19,36 @@ export const ChangePassword = ({ user }: { user: User }) => {
     resolver: yupResolver(ChangePasswordValidation),
   });
 
+  const handleChangePw = (data: {
+    old_password: string;
+    password: string;
+    newpassword: string;
+  }) => {
+    passwordChange({ ...data, username: user.username }).then((res) => {
+      if (res) {
+        const alertContentRedirect: AlertProps = {
+          severity: 'success',
+          title: 'Change successful!',
+          description: 'You have changed your password.',
+        };
+        router.push(
+          `${pathname}?alertContent=${JSON.stringify(alertContentRedirect)}`,
+        );
+      } else {
+        const alertContent: AlertProps = {
+          severity: 'error',
+          title: 'Change failed!',
+          description: 'Please try again.',
+        };
+        router.replace(
+          `${pathname}?alertContent=${JSON.stringify(alertContent)}`,
+        );
+      }
+    });
+  };
+
   return (
-    <form onSubmit={handleSubmit((data) => console.log(data))}>
+    <form onSubmit={handleSubmit(handleChangePw)}>
       <div className='account-item'>
         <Typography className='account-item-title description' color='primary'>
           Current Password
@@ -47,9 +79,9 @@ export const ChangePassword = ({ user }: { user: User }) => {
           placeholder='Repeat Password'
           variant='outlined'
           className='account-item-input'
-          error={Boolean(errors.repeat_password)}
-          helperText={errors.repeat_password?.message}
-          {...register('repeat_password')}
+          error={Boolean(errors.newpassword)}
+          helperText={errors.newpassword?.message}
+          {...register('newpassword')}
         />
         <Button
           variant='contained'

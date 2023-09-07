@@ -1,6 +1,6 @@
 'use client';
 import ThemeWrapper from '../ThemeWrapper';
-import VerticalSelect from '../components/VerticalSelect/VerticalSelect';
+import MBTISelect from '../components/MBTIselect/MBTISelect';
 import { selectProps } from './selectProps';
 import { useContext } from 'react';
 import { MediaQueryContext } from '../components/Providers/MediaQueryProvider';
@@ -22,7 +22,7 @@ export const Organisations = () => {
             variant='outlined'
             className='sidebar-search'
           />
-          <VerticalSelect
+          <MBTISelect
             props={selectProps((mbti, checked) => console.log(mbti, checked))}
           />
         </div>

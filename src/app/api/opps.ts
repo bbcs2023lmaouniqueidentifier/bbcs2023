@@ -1,0 +1,17 @@
+export const getOpps = async () => {
+  const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/getopps`, {
+    cache: 'no-store',
+    method: 'GET',
+  });
+  return resp.status == 200;
+};
+
+export const addOpps = async () => {
+  const resp = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/addopps`, {
+    cache: 'no-store',
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(form),
+  });
+  return resp.status == 200;
+};

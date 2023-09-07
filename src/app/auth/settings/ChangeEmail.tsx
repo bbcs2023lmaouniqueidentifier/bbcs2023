@@ -1,12 +1,16 @@
 import { Button, TextField, Typography } from '@mui/material';
-
+import { emailChange } from '@/app/api/auth';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { ChangeEmailValidation } from './Validation';
+import { AlertProps } from '@/app/components/AlertToast/AlertToast';
+import { useRouter, usePathname } from 'next/navigation';
 import './styles.css';
 import { User } from '@/app/components/Providers/AuthProvider';
 
 export const ChangeEmail = ({ user }: { user: User }) => {
+  const router = useRouter();
+  const pathname = usePathname();
   const {
     register,
     handleSubmit,
@@ -15,8 +19,32 @@ export const ChangeEmail = ({ user }: { user: User }) => {
     resolver: yupResolver(ChangeEmailValidation),
   });
 
+  const handleChangeEmail = (data: { newemail: string; password: string }) => {
+    emailChange({ ...data, username: user.username }).then((res) => {
+      if (res) {
+        const alertContentRedirect: AlertProps = {
+          severity: 'success',
+          title: 'Change successful!',
+          description: 'You have changed your email.',
+        };
+        router.push(
+          `${pathname}?alertContent=${JSON.stringify(alertContentRedirect)}`,
+        );
+      } else {
+        const alertContent: AlertProps = {
+          severity: 'error',
+          title: 'Change failed!',
+          description: 'Please try again.',
+        };
+        router.replace(
+          `${pathname}?alertContent=${JSON.stringify(alertContent)}`,
+        );
+      }
+    });
+  };
+
   return (
-    <form onSubmit={handleSubmit((data) => console.log(data))}>
+    <form onSubmit={handleSubmit(handleChangeEmail)}>
       <div className='account-item'>
         <Typography className='account-item-title description' color='primary'>
           Current Email
@@ -31,9 +59,20 @@ export const ChangeEmail = ({ user }: { user: User }) => {
           placeholder='New Email'
           variant='outlined'
           className='account-item-input'
-          error={Boolean(errors.email)}
-          helperText={errors.email?.message}
-          {...register('email')}
+          error={Boolean(errors.newemail)}
+          helperText={errors.newemail?.message}
+          {...register('newemail')}
+        />
+        <Typography className='account-item-title description' color='primary'>
+          Password
+        </Typography>
+        <TextField
+          placeholder='Password'
+          variant='outlined'
+          className='account-item-input'
+          error={Boolean(errors.password)}
+          helperText={errors.password?.message}
+          {...register('password')}
         />
         <Button
           variant='contained'

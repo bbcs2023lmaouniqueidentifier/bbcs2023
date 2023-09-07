@@ -41,7 +41,6 @@ const MediaQueryProvider = ({ children }: { children: ReactNode }) => {
       fontScale: Number(localStorage.getItem('fontscale')) || 1,
     };
     setTheming(theming);
-    console.log(theming);
   }, []);
 
   const value = useMemo(
