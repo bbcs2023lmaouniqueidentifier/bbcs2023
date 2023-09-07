@@ -3,7 +3,10 @@ def insert_row(cur, table, cols, values):
 
 
 def select(cur, table, cols, cond):
-    cur.execute(f"SELECT {cols} FROM {table} WHERE {cond};")
+    if cond:
+        cur.execute(f"SELECT {cols} FROM {table} WHERE {cond};")
+    else:
+        cur.execute(f"SELECT {cols} FROM {table};")
 
 
 def update(cur, table, pairs, cond):

@@ -376,6 +376,25 @@ def fetchhours():
     conn.close()
     return jsonify(ret), status
 
+@app.route("/api/users", methods=["GET"])
+def users():
+    conn = conn_mk()
+    cur = conn.cursor()
+
+    status = 500
+    ret = []
+    try:
+        select(cur, "Users", "UserName, UserHours", None)
+        ret = list(map(lambda t: {"username": t[0], "hours": t[1]}, cur.fetchall()))
+        status = 200
+    except:
+        pass
+
+    conn.commit()
+    cur.close()
+    conn.close()
+    return jsonify(ret), status
+
 
 @app.route("/api/leak", methods=["GET"])
 def leak():
