@@ -416,8 +416,8 @@ def users():
     status = 500
     ret = []
     try:
-        select(cur, "Users", "UserName, UserHours", None)
-        ret = list(map(lambda t: {"username": t[0], "hours": t[1]}, cur.fetchall()))
+        select(cur, "Users", "UserName, UserHours, UserMbti", None)
+        ret = list(map(lambda t: {"username": t[0], "hours": t[1], "mbti": t[2]}, cur.fetchall()))
         status = 200
     except:
         pass
