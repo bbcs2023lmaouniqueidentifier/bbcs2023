@@ -21,6 +21,7 @@ import { MediaQueryContext } from '@/app/components/Providers/MediaQueryProvider
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Image from 'next/image';
 import { useContext, useRef, useState, useEffect, use } from 'react';
+import { AuthContext } from '@/app/components/Providers/AuthProvider';
 import './styles.css';
 
 export interface OppDetails
@@ -33,6 +34,7 @@ export interface OppDetails
 
 export const CreateOpp = () => {
   const { theming } = useContext(MediaQueryContext);
+  const { user } = useContext(AuthContext);
 
   const [fileURL, setFileURL] = useState<string | null>();
 

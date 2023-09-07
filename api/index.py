@@ -228,7 +228,7 @@ def usermbti():
 @app.route("/api/addopp", methods=["POST"])
 def addopp():
     uname = get_json()["username"]
-    passwd = get_json()["password"]
+    #passwd = get_json()["password"]
     oppname = get_json()["oppname"]
     opplogo = get_json()["opplogo"]
     oppdesc = get_json()["oppdesc"]
@@ -238,8 +238,8 @@ def addopp():
 
     status = 500
     try:
-        corr_cred = check_password(cur, uname, passwd)
-        if corr_cred:
+        #corr_cred = check_password(cur, uname, passwd)
+        #if corr_cred:
             try:
                 insert_row(
                     cur,
@@ -250,8 +250,8 @@ def addopp():
                 status = 200
             except:
                 status = 409  # probably
-        else:
-            status = 401
+        #else:
+            #status = 401
     except BadUsernameException:
         status = 401
     except Exception:
@@ -293,7 +293,7 @@ def getopps():
 @app.route("/api/assignmbtis", methods=["POST"])
 def assignmbtis():
     uname = get_json()["username"]
-    passwd = get_json()["password"]
+    #passwd = get_json()["password"]
     opp = get_json()["oppname"]
     mbtis = get_json()["mbtis"]
     mbtis_parsed = product(
@@ -313,7 +313,7 @@ def assignmbtis():
         if creator != uname:
             status = 403
             raise Exception
-        if not check_password(cur, uname, passwd):
+        #if not check_password(cur, uname, passwd):
             status = 401
             raise Exception
         delete(cur, "MbtiMatch", f"MbtiMatchOName='{opp}'")
@@ -416,8 +416,8 @@ def users():
     status = 500
     ret = []
     try:
-        select(cur, "Users", "UserName, UserHours", None)
-        ret = list(map(lambda t: {"username": t[0], "hours": t[1]}, cur.fetchall()))
+        select(cur, "Users", "UserName, UserHours, UserMbti", None)
+        ret = list(map(lambda t: {"username": t[0], "hours": t[1], "mbti": t[2]}, cur.fetchall()))
         status = 200
     except:
         pass
