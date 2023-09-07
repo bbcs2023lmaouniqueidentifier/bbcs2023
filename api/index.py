@@ -81,6 +81,7 @@ def login():
     try:
         status = 200 if check_password(cur, uname, passwd) else 401
     except Exception as e:
+        status = 401  # ???
         print(e)
     cur.close()
     conn.close()
