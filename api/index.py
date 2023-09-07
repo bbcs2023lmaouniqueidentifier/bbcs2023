@@ -31,8 +31,8 @@ def get_json():
     return request.json
 
 
-@app.route("/api/signup", methods=["POST"])
-def signup():
+@app.route("/api/register", methods=["POST"])
+def register():
     uname = get_json()["username"]
     passwd = get_json()["password"]
     email = get_json()["email"]
@@ -48,8 +48,8 @@ def signup():
             insert_row(
                 cur,
                 "Users",
-                "UserName, UserEmail, UserPwHash, UserPwSalt, UserHours, UserHoursUpdate",
-                (uname, email, pwhash, salt(), 0, 0),
+                "UserName, UserEmail, UserPwHash, UserPwSalt, UserHours, UserHoursUpdate, UserMbti",
+                (uname, email, pwhash, salt(), 0, 0, ""),
             )
             status = 200
         else:
@@ -145,6 +145,60 @@ def passwordchange():
     cur.close()
     conn.close()
     return jsonify({}), status
+
+
+@app.route("/api/usermbti", methods=["GET", "POST"])
+def usermbti():
+    if request.method == "GET":
+        uname = request.args["username"]
+
+        conn = conn_mk()
+        cur = conn.cursor()
+
+        status = 500
+        ret = None
+        try:
+            select(cur, "Users", "UserMbti", f"UserName='{uname}'")
+            ret = cur.fetchone()[0]
+            status = 200
+        except Exception as e:
+            print(e)
+
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify(ret), status
+    else:
+        uname = get_json()["username"]
+        passwd = get_json()["password"]
+        newmbti = get_json()["newmbti"]
+
+        conn = conn_mk()
+        cur = conn.cursor()
+
+        status = 500
+        try:
+            corr_cred = check_password(cur, uname, passwd)
+            if corr_cred:
+                try:
+                    update(
+                        cur,
+                        "Users",
+                        [("UserMbti", repr(newmbti))],
+                        f"UserName='{uname}'"
+                    )
+                    status = 200
+                except:
+                    status = 413  # probably
+            else:
+                status = 401
+        except Exception as e:
+            print(e)
+
+        conn.commit()
+        cur.close()
+        conn.close()
+        return jsonify({}), status
 
 
 @app.route("/api/addopp", methods=["POST"])
