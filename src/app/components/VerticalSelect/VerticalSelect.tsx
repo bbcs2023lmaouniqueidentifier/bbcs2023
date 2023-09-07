@@ -45,17 +45,11 @@ export const VerticalSelect = ({ props }: { props: VerticalSelectProps[] }) => {
         >
           Filter by MBTI
         </Typography>
-        <IconButton>
+        <IconButton onClick={() => setOpen(!open)}>
           {open ? (
-            <KeyboardArrowUpIcon
-              className='vertical-select-icon'
-              onClick={() => setOpen(!open)}
-            />
+            <KeyboardArrowUpIcon className='vertical-select-icon' />
           ) : (
-            <KeyboardArrowDownIcon
-              className='vertical-select-icon'
-              onClick={() => setOpen(!open)}
-            />
+            <KeyboardArrowDownIcon className='vertical-select-icon' />
           )}
         </IconButton>
       </div>
