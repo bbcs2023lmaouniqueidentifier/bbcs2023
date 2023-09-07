@@ -2,16 +2,31 @@
 import ThemeWrapper from '../ThemeWrapper';
 import MBTISelect from '../components/MBTIselect/MBTISelect';
 import { selectProps } from './selectProps';
-import { useContext } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import { MediaQueryContext } from '../components/Providers/MediaQueryProvider';
 import { TextField, Typography } from '@mui/material';
 import { AuthContext } from '../components/Providers/AuthProvider';
-import OrganisationCard from './OrganisationCard';
+import OrganisationCard, { OrganisationCardProps } from './OrganisationCard';
+import router from 'next/router';
+import { AlertProps } from '../components/AlertToast/AlertToast';
+
 import './styles.css';
 
 export const Organisations = () => {
   const { theming } = useContext(MediaQueryContext);
-  const { user } = useContext(AuthContext);
+  const { user, isLoading } = useContext(AuthContext);
+  const [search, setSearch] = useState('');
+  const [orgs, setOrgs] = useState<OrganisationCardProps[]>([]);
+  useEffect(() => {
+    if (!isLoading && !user) {
+      const alertContentRedirect: AlertProps = {
+        severity: 'error',
+        title: 'You have not logged in',
+        description: 'Please log in to access this page.',
+      };
+      router.push(`/?alertContent=${JSON.stringify(alertContentRedirect)}`);
+    }
+  }, [isLoading, user]);
 
   const temp = '/volunteers/volunteer3.png';
   const defaultMBTI = {

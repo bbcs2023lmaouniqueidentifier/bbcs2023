@@ -4,7 +4,7 @@ import { AccountDetails } from '../types';
 import Image from 'next/image';
 import './styles.css';
 
-type OrganisationCardProps = Omit<
+export type OrganisationCardProps = Omit<
   OppDetails,
   keyof AccountDetails | 'opp_logo'
 > & { opp_logo: string };
@@ -13,6 +13,7 @@ export const OrganisationCard = ({
   opp_logo,
   opp_name,
   opp_desc,
+  opp_short_desc,
 }: OrganisationCardProps) => {
   return (
     <div className='organisation-card'>
@@ -33,6 +34,13 @@ export const OrganisationCard = ({
           noWrap
         >
           {opp_name}
+        </Typography>
+        <Typography
+          className='organisation-card-description description emphasis'
+          color='primary'
+          noWrap
+        >
+          {opp_short_desc}
         </Typography>
         <Typography
           className='organisation-card-description description'
