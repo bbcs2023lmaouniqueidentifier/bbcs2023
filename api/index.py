@@ -85,16 +85,20 @@ def login():
     cur = conn.cursor()
     status = 500
 
+    ret = {}
     try:
         status = 200 if check_password(cur, uname, passwd) else 401
     except BadUsernameException:
         status = 401
+        select(cur, "Users", "UserEmail, UserHours, UserMbti", f"UserName='{uname}'")
+        email, hours, mbti = cur.fetchone()
+        ret = {"username": uname, "email": email, "hours": hours, "mbti": mbti}
     except Exception:
         status = 401  # ???
     cur.close()
     conn.close()
 
-    return jsonify({}), status
+    return jsonify(ret), status
 
 
 @app.route("/api/emailchange", methods=["POST"])
