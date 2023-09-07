@@ -62,3 +62,7 @@
   border: 1px solid var(--secondary);
   border-radius: 5px;
 }
+
+.navbar-link {
+  cursor: pointer;
+}

@@ -149,7 +149,7 @@ export const Settings = () => {
         </section>
 
         <hr className='settings-divider' />
-        <section className='account'>
+        <section className='account' id='account'>
           <div>
             <Typography className='subtitle' color='primary'>
               Account

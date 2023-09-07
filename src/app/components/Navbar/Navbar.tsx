@@ -19,13 +19,9 @@ import './styles.css';
 export const Navbar = forwardRef<HTMLDivElement, JSXProps>((props, ref) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [popoverOpen, setPopoverOpen] = useState<boolean>(false);
-  const { breakpoints, theming } = useContext(MediaQueryContext);
+  const { breakpoints } = useContext(MediaQueryContext);
 
-  const [isDark, setIsDark] = useState<boolean>(theming.darkMode);
   const router = useRouter();
-  useEffect(() => {
-    setIsDark(theming.darkMode);
-  }, [theming.darkMode]);
 
   useEffect(() => setPopoverOpen(false), [breakpoints.mobile]);
 
@@ -34,31 +30,32 @@ export const Navbar = forwardRef<HTMLDivElement, JSXProps>((props, ref) => {
     setPopoverOpen(!popoverOpen);
   };
 
-  const handleMobileNavigation = (href: string) => {
-    setPopoverOpen(false);
-    const element = document.querySelector(href);
-    if (element) {
-      setTimeout(() => element.scrollIntoView({ behavior: 'auto' }), 100);
-    }
-  };
-
   return (
     <div className={props.className} id={props.id} ref={ref}>
       <AppBar className='navbar' position='fixed'>
         <Toolbar className='navbar-inner'>
-          <div className='navbar-logo' onClick={() => router.push('/  ')} />
+          <div className='navbar-logo' onClick={() => router.push('/')} />
 
           {breakpoints.mobile ? (
             <>
               <div className='navbar-links'>
-                <a className='navbar-link description' href='#landing'>
-                  About Us
+                <a
+                  className='navbar-link description'
+                  onClick={() => router.push('/organisations')}
+                >
+                  Opportunities
                 </a>
-                <a className='navbar-link description' href='#skills'>
-                  Organisations
+                <a
+                  className='navbar-link description'
+                  onClick={() => router.push('/leaderboard')}
+                >
+                  Leaderboard
                 </a>
-                <a className='navbar-link description' href='#projects'>
-                  MBTI Quiz
+                <a
+                  className='navbar-link description'
+                  onClick={() => router.push('/auth/settings#account')}
+                >
+                  My MBTI
                 </a>
               </div>
 
@@ -91,21 +88,21 @@ export const Navbar = forwardRef<HTMLDivElement, JSXProps>((props, ref) => {
                 <Paper className='navbar-mobile-dropdown'>
                   <Button
                     className='navbar-mobile-dropdown-button'
-                    onClick={() => handleMobileNavigation('#landing')}
+                    onClick={() => router.push('/organisations')}
                   >
-                    <Typography>About</Typography>
+                    <Typography>Opportunities</Typography>
                   </Button>
                   <Button
                     className='navbar-mobile-dropdown-button'
-                    onClick={() => handleMobileNavigation('#skills')}
+                    onClick={() => router.push('/leaderboard')}
                   >
-                    <Typography>Organisations</Typography>
+                    <Typography>Leaderboard</Typography>
                   </Button>
                   <Button
                     className='navbar-mobile-dropdown-button'
-                    onClick={() => handleMobileNavigation('#projects')}
+                    onClick={() => router.push('/auth/settings')}
                   >
-                    <Typography>MBTI Quiz</Typography>
+                    <Typography>My MBTI</Typography>
                   </Button>
                   <Button
                     className='navbar-mobile-dropdown-button'
