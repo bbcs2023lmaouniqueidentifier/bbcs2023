@@ -346,7 +346,7 @@ def fetchmbtis():
     
 
     status = 500
-    
+    res = defaultdict(list)
     try:
         rows = cur.execute("SELECT OpportunityName FROM Opportunities;").fetchall()
         names = [row[0] for row in rows]
@@ -354,7 +354,7 @@ def fetchmbtis():
                 f"SELECT MbtiMatchOName, MbtiCat FROM MbtiMatch WHERE MbtiMatchOName IN ({','.join(['?']*len(names))});",
                 names,
             ).fetchall()
-        res = defaultdict(list)
+        
         for opp, mbti in mbtis:
             res[opp].append(mbti)
         status = 200
