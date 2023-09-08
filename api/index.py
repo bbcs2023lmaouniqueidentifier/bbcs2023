@@ -350,15 +350,22 @@ def fetchmbtis():
     try:
         rows = cur.execute("SELECT OpportunityName FROM Opportunities;").fetchall()
         names = [row[0] for row in rows]
-        mbtis = cur.execute(
-                f"SELECT MbtiMatchOName, MbtiCat FROM MbtiMatch WHERE MbtiMatchOName IN ({','.join(['?']*len(names))});",
-                names,
-            ).fetchall()
+        if "PROD" in os.environ:
+            mbtis = cur.execute(
+                    "SELECT MbtiMatchOName, MbtiCat FROM MbtiMatch WHERE MbtiMatchOName = ANY(%s);",
+                    (names,),
+                ).fetchall()
+        else:
+            mbtis = cur.execute(
+                    f"SELECT MbtiMatchOName, MbtiCat FROM MbtiMatch WHERE MbtiMatchOName IN ({','.join(['?'] * len(names))});",
+                    names,
+                ).fetchall()
         
         for opp, mbti in mbtis:
             res[opp].append(mbti)
         status = 200
-    except Exception:
+    except Exception as e:
+        
         status = 404
 
     conn.commit()

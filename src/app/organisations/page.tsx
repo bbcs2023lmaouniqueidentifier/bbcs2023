@@ -112,13 +112,13 @@ export const Organisations = () => {
             color='primary'
             noWrap
           >
-            Organisations
+            Opportunities
           </Typography>
           <Typography
             className='organisations-description description'
             color='primary'
           >
-            Here are some organisations that you may be interested in!
+            Here are some opportunities that you may be interested in!
           </Typography>
           <div className='organisations-list'>
             {filteredMBTIOrgs.filter(value => filteredSearchOrgs.includes(value)).map((org, idx) => {
