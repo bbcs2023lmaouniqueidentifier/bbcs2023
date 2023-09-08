@@ -1,16 +1,8 @@
 import * as Yup from 'yup';
 
 const SOME_SIZE_LIMIT = 1048576000;
-const SUPPORTED_FORMATS = ['image/jpeg', 'image/png', 'image/webp'];
+const SUPPORTED_FORMATS = ['image/png'];
 export const AddOppValidation = Yup.object().shape({
-  username: Yup.string()
-    .matches(
-      /^[a-zA-Z0-9]{4,20}$/,
-      'Username should contain 4 to 20 alphanumeric characters',
-    )
-    .required('Username is required'),
-
-  password: Yup.string().required('Password is required'),
   opp_name: Yup.string().required('Name of volunteer opportunity is required'),
   opp_short_desc: Yup.string()
     .required('Short description is required')

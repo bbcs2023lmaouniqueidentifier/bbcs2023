@@ -15,28 +15,45 @@ import { selectProps } from '@/app/organisations/selectProps';
 import MBTISelect from '@/app/components/MBTIselect/MBTISelect';
 import { MBTI } from '@/app/types';
 import { AddOppValidation } from './Validation';
-import { AccountDetails } from '@/app/types';
 import { ThemeWrapper } from '@/app/ThemeWrapper';
 import { MediaQueryContext } from '@/app/components/Providers/MediaQueryProvider';
 import AddCircleIcon from '@mui/icons-material/AddCircle';
 import Image from 'next/image';
-import { useContext, useRef, useState, useEffect, use } from 'react';
+import { useContext, useRef, useState, useEffect } from 'react';
 import { AuthContext } from '@/app/components/Providers/AuthProvider';
+import { useRouter, usePathname } from 'next/navigation';
+import { AlertProps } from '@/app/components/AlertToast/AlertToast';
+import { addOpps } from '@/app/api/opps';
 import './styles.css';
 
-export interface OppDetails
-  extends Omit<AccountDetails, 'email' | 'repeat_password'> {
+export interface OppDetails {
   opp_logo: FileList;
   opp_name: string;
   opp_desc: string;
   opp_short_desc: string;
+  opp_mbti: MBTI;
 }
 
 export const CreateOpp = () => {
   const { theming } = useContext(MediaQueryContext);
-  const { user } = useContext(AuthContext);
-
+  const { user, isLoading } = useContext(AuthContext);
+  if (!user) return null;
+  const router = useRouter();
+  const pathname = usePathname();
   const [fileURL, setFileURL] = useState<string | null>();
+
+  useEffect(() => {
+    if (!isLoading && !user) {
+      const alertContentRedirect: AlertProps = {
+        severity: 'error',
+        title: 'You have not logged in',
+        description: 'Please log in to access this page.',
+      };
+      router.push(
+        `/auth/login?alertContent=${JSON.stringify(alertContentRedirect)}`,
+      );
+    }
+  }, [isLoading, user]);
 
   //handle MBTI select (no hook forms)
 
@@ -71,10 +88,44 @@ export const CreateOpp = () => {
     setFileURL(imageURL);
   }, [logo]);
 
-  const inputRef = useRef<HTMLInputElement>(null);
+  const handleCreateOpp = async (form: Omit<OppDetails, 'opp_mbti'>) => {
+    if (!user) return;
+    // check if at least one opposing mbti traits are true
+    const check = [mbti.E && mbti.I, mbti.S && mbti.N, mbti.T && mbti.F, mbti.J && mbti.P].every((v) => v);
+    if (!check) {
+      const alertContent: AlertProps = {
+        severity: 'error',
+        title: 'Add failed!',
+        description: 'Please select at least one opposing MBTI trait.',
+      };
+      router.replace(
+        `${pathname}?alertContent=${JSON.stringify(alertContent)}`,
+      );
+      return;
+    }
 
-  const handleCreateOpp = async (form: OppDetails) => {
-    console.log(form, mbti);
+    
+    const res = await addOpps(user)({ ...form, opp_mbti: mbti });
+    if (res) {
+
+      const alertContentRedirect: AlertProps = {
+        severity: 'success',
+        title: 'Add successful!',
+        description: 'You have submitted a new opportunity!',
+      };
+      router.push(
+        `${pathname}?alertContent=${JSON.stringify(alertContentRedirect)}`,
+      );
+    } else {
+      const alertContent: AlertProps = {
+        severity: 'error',
+        title: 'Add failed!',
+        description: 'Please try again.',
+      };
+      router.replace(
+        `${pathname}?alertContent=${JSON.stringify(alertContent)}`,
+      );
+    }
   };
 
   const textFieldStyles = {
@@ -113,7 +164,7 @@ export const CreateOpp = () => {
                 {...register('opp_logo')}
                 id='opp_logo'
                 type='file'
-                accept='image/jpeg,image/png,image/webp'
+                accept='image/png'
                 className='opp-logo-input opp-logo-img'
                 style={{ backgroundImage: `url(${fileURL})` }}
               />
@@ -127,8 +178,8 @@ export const CreateOpp = () => {
               sx={textFieldStyles}
               type='text'
               label='Name of opportunity'
-              error={Boolean(errors.username)}
-              helperText={errors.username?.message}
+              error={Boolean(errors.opp_name)}
+              helperText={errors.opp_name?.message}
               {...register('opp_name')}
               required
             />
@@ -138,8 +189,8 @@ export const CreateOpp = () => {
               sx={textFieldStyles}
               type='text'
               label="Short summary (date/time/location/who you're helping)"
-              error={Boolean(errors.username)}
-              helperText={errors.username?.message}
+              error={Boolean(errors.opp_short_desc)}
+              helperText={errors.opp_short_desc?.message}
               {...register('opp_short_desc')}
               required
             />
@@ -151,42 +202,20 @@ export const CreateOpp = () => {
               multiline
               rows={6}
               label='Description'
-              error={Boolean(errors.username)}
-              helperText={errors.username?.message}
+              error={Boolean(errors.opp_desc)}
+              helperText={errors.opp_desc?.message}
               {...register('opp_desc')}
               required
             />
           </FormControl>
-          <Typography className='description' color='primary'>
-            Identity confirmation
-          </Typography>
-          <FormControl id='username' className='form-control'>
-            <TextField
-              sx={textFieldStyles}
-              type='text'
-              label='Username'
-              error={Boolean(errors.username)}
-              helperText={errors.username?.message}
-              {...register('username')}
-              required
-            />
-          </FormControl>
 
-          <FormControl id='password' className='form-control'>
-            <TextField
-              sx={textFieldStyles}
-              type='password'
-              label='Password'
-              error={Boolean(errors.password)}
-              helperText={errors.password?.message}
-              {...register('password')}
-              required
-            />
-          </FormControl>
           <Typography className='description' color='primary'>
             Preferred personality types
           </Typography>
-          <MBTISelect props={MBTIprops} column={{ isColumn: false }} />
+          <div style={{ width: '100%' }}>
+            <MBTISelect props={MBTIprops} column={{ isColumn: false }} />
+          </div>
+
           <Button
             variant='contained'
             color='primary'

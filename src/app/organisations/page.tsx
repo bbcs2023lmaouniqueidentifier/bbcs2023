@@ -7,28 +7,28 @@ import { MediaQueryContext } from '../components/Providers/MediaQueryProvider';
 import { TextField, Typography } from '@mui/material';
 import { AuthContext } from '../components/Providers/AuthProvider';
 import OrganisationCard, { OrganisationCardProps } from './OrganisationCard';
-import router from 'next/router';
-import { AlertProps } from '../components/AlertToast/AlertToast';
+
+import { getOpps } from '../api/opps';
+import { MBTI } from '../types';
 
 import './styles.css';
+
+interface OppRequestDetails {
+  OpportunityName: string;
+  OpportunityCreator: string;
+  OpportunityLogo: File;
+  OpportunityDesc: string;
+  OpportunityShortDesc: string;
+  opp_mbti: Array<string>;
+}
 
 export const Organisations = () => {
   const { theming } = useContext(MediaQueryContext);
   const { user, isLoading } = useContext(AuthContext);
   const [search, setSearch] = useState('');
   const [orgs, setOrgs] = useState<OrganisationCardProps[]>([]);
-  useEffect(() => {
-    if (!isLoading && !user) {
-      const alertContentRedirect: AlertProps = {
-        severity: 'error',
-        title: 'You have not logged in',
-        description: 'Please log in to access this page.',
-      };
-      router.push(`/?alertContent=${JSON.stringify(alertContentRedirect)}`);
-    }
-  }, [isLoading, user]);
+  const [filteredOrgs, setFilteredOrgs] = useState<OrganisationCardProps[]>([]);
 
-  const temp = '/volunteers/volunteer3.png';
   const defaultMBTI = {
     E: true,
     I: true,
@@ -38,6 +38,41 @@ export const Organisations = () => {
     F: true,
     J: true,
     P: true,
+  };
+
+  useEffect(() => {
+    getOpps().then((res) => {
+      const mapped: OrganisationCardProps[] = res.map(
+        (opp: OppRequestDetails) => {
+          const mbti = structuredClone(defaultMBTI);
+          Object.keys(mbti).map((key) => (mbti[key as keyof MBTI] = false));
+          let joined = '';
+          for (const key of opp.opp_mbti) {
+            joined += key;
+          }
+          const uniques = [...new Set(joined.split(''))];
+          uniques.forEach((key: string) => {
+            mbti[key as keyof MBTI] = true;
+          });
+
+          return {
+            opp_name: opp.OpportunityName,
+            opp_desc: opp.OpportunityDesc,
+            opp_short_desc: opp.OpportunityShortDesc,
+            opp_mbti: mbti,
+            opp_logo: URL.createObjectURL(opp.OpportunityLogo),
+          };
+        },
+      );
+      setOrgs(mapped);
+    });
+  }, []);
+
+  const handleMBTI = (mbti: string, checked: boolean) => {
+    const res = orgs.filter((org) => {
+      return org.opp_mbti[mbti as keyof MBTI] === checked;
+    });
+    setFilteredOrgs(res);
   };
 
   return (
@@ -50,12 +85,17 @@ export const Organisations = () => {
             className='sidebar-search'
           />
           <MBTISelect
-            props={selectProps(user?.mbti || defaultMBTI, (mbti, checked) =>
-              console.log(mbti, checked),
+            props={selectProps(
+              user?.mbti && Object.values(user?.mbti).every((v) => !v)
+                ? defaultMBTI
+                : user?.mbti
+                ? user?.mbti
+                : defaultMBTI,
+              handleMBTI,
             )}
           />
         </div>
-        <div>
+        <div className='organisations-content'>
           <Typography
             className='organisations-title bold title'
             color='primary'
@@ -70,30 +110,9 @@ export const Organisations = () => {
             Here are some organisations that you may be interested in!
           </Typography>
           <div className='organisations-list'>
-            <OrganisationCard
-              opp_name='Singapore Red Cross'
-              opp_desc='The Singapore Red Cross is a homegrown humanitarian organisation dedicated to relieving human suffering, protecting lives and dignity and responding to emergencies since 1949. We are part of a world-wide, non-political, non-religious movement - the International Red Cross and Red Crescent Movement - comprising 190 National Societies, more than 17 million volunteers and 450,000 staff worldwide.'
-              opp_logo={temp}
-              opp_short_desc='hi'
-            />
-            <OrganisationCard
-              opp_name='Singapore Red Cross'
-              opp_desc='The Singapore Red Cross is a homegrown humanitarian organisation dedicated to relieving human suffering, protecting lives and dignity and responding to emergencies since 1949. We are part of a world-wide, non-political, non-religious movement - the International Red Cross and Red Crescent Movement - comprising 190 National Societies, more than 17 million volunteers and 450,000 staff worldwide.'
-              opp_logo={temp}
-              opp_short_desc='hi'
-            />
-            <OrganisationCard
-              opp_name='Singapore Red Cross'
-              opp_desc='The Singapore Red Cross is a homegrown humanitarian organisation dedicated to relieving human suffering, protecting lives and dignity and responding to emergencies since 1949. We are part of a world-wide, non-political, non-religious movement - the International Red Cross and Red Crescent Movement - comprising 190 National Societies, more than 17 million volunteers and 450,000 staff worldwide.'
-              opp_logo={temp}
-              opp_short_desc='hi'
-            />
-            <OrganisationCard
-              opp_name='Singapore Red Cross'
-              opp_desc='The Singapore Red Cross is a homegrown humanitarian organisation dedicated to relieving human suffering, protecting lives and dignity and responding to emergencies since 1949. We are part of a world-wide, non-political, non-religious movement - the International Red Cross and Red Crescent Movement - comprising 190 National Societies, more than 17 million volunteers and 450,000 staff worldwide.'
-              opp_logo={temp}
-              opp_short_desc='hi'
-            />
+            {filteredOrgs.map((org, idx) => {
+              return <OrganisationCard {...org} key={idx} />;
+            })}
           </div>
         </div>
       </section>

@@ -47,8 +47,6 @@ export interface AuthContextType {
   registerUserAccount: (accountDetails: AccountDetails) => Promise<number>;
 }
 
-//MBTI values must add up to 1
-
 export const testUser: User = {
   username: 'john tan',
   email: 'fuckyou@gmail.com',

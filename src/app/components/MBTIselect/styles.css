@@ -65,3 +65,9 @@
   width: 100%;
   margin: 0;
 }
+
+.not-column {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  grid-column-gap: 5vw;
+}

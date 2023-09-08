@@ -48,7 +48,9 @@ export const Settings = () => {
         title: 'You have not logged in',
         description: 'Please log in to access this page.',
       };
-      router.push(`/?alertContent=${JSON.stringify(alertContentRedirect)}`);
+      router.push(
+        `/auth/login?alertContent=${JSON.stringify(alertContentRedirect)}`,
+      );
     }
   }, [isLoading, user]);
 
