@@ -25,7 +25,7 @@ export const Leaderboard = () => {
   const { theming } = useContext(MediaQueryContext);
   const { user } = useContext(AuthContext);
   const [users, setUsers] = useState<
-    { username: string; hours: number }[] | null
+    { username: string; hours: number, mbti: string }[] | null
   >(null);
   if (!user) return null;
   const formula = (x: number) => {
@@ -46,7 +46,7 @@ export const Leaderboard = () => {
   };
 
   useEffect(() => {
-    getUsers().then((res: { username: string; hours: number }[]) => {
+    getUsers().then((res: { username: string; hours: number, mbti: string }[]) => {
       res.sort((a, b) => b.hours - a.hours);
 
       setUsers(res);
@@ -93,7 +93,7 @@ export const Leaderboard = () => {
                         {formula(Number(user.hours))}
                       </TableCell>
                       <TableCell align='right'>{user.hours}</TableCell>
-                      <TableCell align='right'></TableCell>
+                      <TableCell align='right'>{user.mbti}</TableCell>
                     </TableRow>
                   ))}
                 </TableBody>

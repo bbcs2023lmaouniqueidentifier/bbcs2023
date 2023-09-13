@@ -92,10 +92,10 @@ export const CreateOpp = () => {
     if (!user) return;
     // check if at least one opposing mbti traits are true
     const check = [
-      mbti.E && mbti.I,
-      mbti.S && mbti.N,
-      mbti.T && mbti.F,
-      mbti.J && mbti.P,
+      mbti.E || mbti.I,
+      mbti.S || mbti.N,
+      mbti.T || mbti.F,
+      mbti.J || mbti.P,
     ].every((v) => v);
     if (!check) {
       const alertContent: AlertProps = {
