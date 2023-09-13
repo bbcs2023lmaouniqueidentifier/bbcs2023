@@ -91,7 +91,12 @@ export const CreateOpp = () => {
   const handleCreateOpp = async (form: Omit<OppDetails, 'opp_mbti'>) => {
     if (!user) return;
     // check if at least one opposing mbti traits are true
-    const check = [mbti.E && mbti.I, mbti.S && mbti.N, mbti.T && mbti.F, mbti.J && mbti.P].every((v) => v);
+    const check = [
+      mbti.E && mbti.I,
+      mbti.S && mbti.N,
+      mbti.T && mbti.F,
+      mbti.J && mbti.P,
+    ].every((v) => v);
     if (!check) {
       const alertContent: AlertProps = {
         severity: 'error',
@@ -104,10 +109,8 @@ export const CreateOpp = () => {
       return;
     }
 
-    
     const res = await addOpps(user)({ ...form, opp_mbti: mbti });
     if (res) {
-
       const alertContentRedirect: AlertProps = {
         severity: 'success',
         title: 'Add successful!',

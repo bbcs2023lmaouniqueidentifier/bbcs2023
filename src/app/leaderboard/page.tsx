@@ -50,7 +50,6 @@ export const Leaderboard = () => {
       res.sort((a, b) => b.hours - a.hours);
 
       setUsers(res);
-      console.log(res);
     });
   }, []);
   useEffect(() => console.log(users), [users]);

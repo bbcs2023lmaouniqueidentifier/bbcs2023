@@ -8,18 +8,19 @@ import {
   Paper,
   Typography,
 } from '@mui/material';
-import Link from 'next/link';
 import { forwardRef, useState, useContext, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import DensityMediumIcon from '@mui/icons-material/DensityMedium';
 import { MediaQueryContext } from '@/app/components/Providers/MediaQueryProvider';
 import { JSXProps } from '@/app/types';
+import { AuthContext } from '../Providers/AuthProvider';
 import './styles.css';
 
 export const Navbar = forwardRef<HTMLDivElement, JSXProps>((props, ref) => {
   const [anchorEl, setAnchorEl] = useState<null | HTMLElement>(null);
   const [popoverOpen, setPopoverOpen] = useState<boolean>(false);
   const { breakpoints } = useContext(MediaQueryContext);
+  const { user, logout } = useContext(AuthContext);
 
   const router = useRouter();
 
@@ -28,6 +29,16 @@ export const Navbar = forwardRef<HTMLDivElement, JSXProps>((props, ref) => {
   const handlePopover = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
     setPopoverOpen(!popoverOpen);
+  };
+
+  const handleUserButtonClick = () => {
+    if (user) {
+      logout();
+      router.push('/');
+      window.location.reload();
+    } else {
+      router.push('/auth/login');
+    }
   };
 
   return (
@@ -53,18 +64,22 @@ export const Navbar = forwardRef<HTMLDivElement, JSXProps>((props, ref) => {
                 </a>
                 <a
                   className='navbar-link description'
-                  onClick={() => router.push('/auth/settings#mbti')}
+                  onClick={() => router.push('/auth/settings')}
                 >
-                  My MBTI
+                  Settings
                 </a>
               </div>
 
               <Button
                 className='button common-button'
                 variant='contained'
-                onClick={() => router.push('/auth/login')}
+                onClick={handleUserButtonClick}
               >
-                Login
+                {user ? (
+                  <Typography noWrap>Logout</Typography>
+                ) : (
+                  <Typography noWrap>Login</Typography>
+                )}
               </Button>
             </>
           ) : (
@@ -100,15 +115,19 @@ export const Navbar = forwardRef<HTMLDivElement, JSXProps>((props, ref) => {
                   </Button>
                   <Button
                     className='navbar-mobile-dropdown-button'
-                    onClick={() => router.push('/auth/settings#mbti')}
+                    onClick={() => router.push('/auth/settings')}
                   >
-                    <Typography>My MBTI</Typography>
+                    <Typography>Settings</Typography>
                   </Button>
                   <Button
                     className='navbar-mobile-dropdown-button'
-                    onClick={() => router.push('/auth/login')}
+                    onClick={handleUserButtonClick}
                   >
-                    <Typography>Login</Typography>
+                    {user ? (
+                      <Typography noWrap>Logout</Typography>
+                    ) : (
+                      <Typography noWrap>Login</Typography>
+                    )}
                   </Button>
                 </Paper>
               </Popover>
