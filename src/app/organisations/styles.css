@@ -41,3 +41,7 @@
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   grid-gap: 5px;
 }
+
+.organisations-content {
+  padding: 2%;
+}

@@ -1,6 +1,7 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
 from time import time
+from collections import defaultdict
 
 import os
 import sys
@@ -232,6 +233,7 @@ def addopp():
     oppname = get_json()["oppname"]
     opplogo = get_json()["opplogo"]
     oppdesc = get_json()["oppdesc"]
+    oppshortdesc = get_json()["oppshortdesc"]
 
     conn = conn_mk()
     cur = conn.cursor()
@@ -244,8 +246,8 @@ def addopp():
                 insert_row(
                     cur,
                     "Opportunities",
-                    "OpportunityName, OpportunityCreator, OpportunityLogo, OpportunityDesc",
-                    (oppname, uname, opplogo, oppdesc),
+                    "OpportunityName, OpportunityCreator, OpportunityLogo, OpportunityDesc, OpportunityShortDesc",
+                    (oppname, uname, opplogo, oppdesc, oppshortdesc),
                 )
                 status = 200
             except:
@@ -272,14 +274,17 @@ def getopps():
     ret = {}
     try:
         rows = cur.execute(
-            "SELECT OpportunityName, OpportunityCreator, OpportunityLogo, OpportunityDesc FROM Opportunities;"
+            "SELECT OpportunityName, OpportunityCreator, OpportunityLogo, OpportunityDesc, OpportunityShortDesc FROM Opportunities;"
         ).fetchall()
         cols = (
             "OpportunityName",
             "OpportunityCreator",
             "OpportunityLogo",
             "OpportunityDesc",
+            "OpportunityShortDesc",
         )
+        
+            
         ret = list(map(lambda row: {k: v for k, v in zip(cols, row)}, rows))
         status = 200
     except Exception:
@@ -302,7 +307,7 @@ def assignmbtis():
         [k for k in "TF" if k in mbtis],
         [k for k in "JP" if k in mbtis]
     )
-
+    
     conn = conn_mk()
     cur = conn.cursor()
     status = 500
@@ -318,12 +323,13 @@ def assignmbtis():
             raise Exception
         delete(cur, "MbtiMatch", f"MbtiMatchOName='{opp}'")
         for mbti in mbtis_parsed:
-            insert_row(cur, "MbtiMatch", "MbtiMatchOName, MbtiCat", (opp, mbti))
+           
+            insert_row(cur, "MbtiMatch", "MbtiMatchOName, MbtiCat", (opp, ''.join(mbti)))
         status = 200
     except BadUsernameException:
         status = 401
-    except Exception:
-        pass
+    except Exception as e:
+        print(e)
 
     conn.commit()
     cur.close()
@@ -333,24 +339,32 @@ def assignmbtis():
 
 @app.route("/api/fetchmbtis", methods=["GET"])
 def fetchmbtis():
-    opp = request.args["oppname"]
+    
 
     conn = conn_mk()
     cur = conn.cursor()
+    
 
     status = 500
-    ret = []
+    
     try:
-        select(cur, "MbtiMatch", "MbtiCat", f"MbtiMatchOName='{opp}'")
-        ret = list(map(lambda t: t[0], cur.fetchall()))
+        rows = cur.execute("SELECT OpportunityName FROM Opportunities;").fetchall()
+        names = [row[0] for row in rows]
+        mbtis = cur.execute(
+                f"SELECT MbtiMatchOName, MbtiCat FROM MbtiMatch WHERE MbtiMatchOName IN ({','.join(['?']*len(names))});",
+                names,
+            ).fetchall()
+        res = defaultdict(list)
+        for opp, mbti in mbtis:
+            res[opp].append(mbti)
         status = 200
     except Exception:
-        pass
+        status = 404
 
     conn.commit()
     cur.close()
     conn.close()
-    return jsonify(ret), status
+    return jsonify(dict(res)), status
 
 
 @app.route("/api/addhours", methods=["POST"])

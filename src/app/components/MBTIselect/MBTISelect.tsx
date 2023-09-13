@@ -77,16 +77,8 @@ export const MBTISelect = ({
       </div>
       <Collapse in={open} className='vertical-select-container'>
         <div
-          className='vertical-select'
-          style={
-            column?.isColumn
-              ? undefined
-              : {
-                  display: 'grid !important',
-                  gridTemplateColumns:
-                    'repeat(auto-fill, minmax(150px, 1fr)) !important',
-                  gridColumnGap: '5vw !important',
-                }
+          className={
+            'vertical-select' + (column?.isColumn ? '' : ' not-column')
           }
         >
           {props.map((child, idx) => (

@@ -14,7 +14,13 @@ export const OrganisationCard = ({
   opp_name,
   opp_desc,
   opp_short_desc,
+  opp_mbti,
 }: OrganisationCardProps) => {
+  const parsedMBTI = Object.entries(opp_mbti)
+    .filter(([_, value]) => value)
+    .map(([key]) => key)
+    .join(' ');
+
   return (
     <div className='organisation-card'>
       <div className='organisation-card-image'>
@@ -35,13 +41,22 @@ export const OrganisationCard = ({
         >
           {opp_name}
         </Typography>
+
         <Typography
-          className='organisation-card-description description emphasis'
+          className='organisation-card-description description bold'
           color='primary'
           noWrap
         >
           {opp_short_desc}
         </Typography>
+        <Typography
+          className='organisation-card-description description emphasis'
+          color='primary'
+          noWrap
+        >
+          {parsedMBTI}
+        </Typography>
+
         <Typography
           className='organisation-card-description description'
           color='primary'
@@ -53,4 +68,5 @@ export const OrganisationCard = ({
   );
 };
 
+OrganisationCard.displayName = 'OrganisationCard';
 export default OrganisationCard;

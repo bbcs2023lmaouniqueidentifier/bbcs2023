@@ -29,6 +29,7 @@ def db_setup_schema(cur):
             ("OpportunityCreator", "VARCHAR(255)", "Users", "UserName"),
             ("OpportunityLogo", "TEXT"),  # base64-encoded png
             ("OpportunityDesc", "VARCHAR(65535)"),
+            ("OpportunityShortDesc", "VARCHAR(255)"),
         ],
         "UserOpp": [
             "UserOppUName, UserOppOName",
