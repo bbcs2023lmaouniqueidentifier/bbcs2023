@@ -24,10 +24,11 @@ interface OppRequestDetails {
 
 export const Organisations = () => {
   const { theming } = useContext(MediaQueryContext);
-  const { user, isLoading } = useContext(AuthContext);
+  const { user } = useContext(AuthContext);
   const [search, setSearch] = useState('');
   const [orgs, setOrgs] = useState<OrganisationCardProps[]>([]);
-  const [filteredOrgs, setFilteredOrgs] = useState<OrganisationCardProps[]>([]);
+  const [filteredMBTIOrgs, setFilteredMBTIOrgs] = useState<OrganisationCardProps[]>([]);
+  const [filteredSearchOrgs, setFilteredSearchOrgs] = useState<OrganisationCardProps[]>([]);
 
   const defaultMBTI = {
     E: true,
@@ -46,10 +47,8 @@ export const Organisations = () => {
         (opp: OppRequestDetails) => {
           const mbti = structuredClone(defaultMBTI);
           Object.keys(mbti).map((key) => (mbti[key as keyof MBTI] = false));
-          let joined = '';
-          for (const key of opp.opp_mbti) {
-            joined += key;
-          }
+          const joined = opp.opp_mbti.join('')
+          
           const uniques = [...new Set(joined.split(''))];
           uniques.forEach((key: string) => {
             mbti[key as keyof MBTI] = true;
@@ -65,6 +64,8 @@ export const Organisations = () => {
         },
       );
       setOrgs(mapped);
+      setFilteredMBTIOrgs(mapped);
+      setFilteredSearchOrgs(mapped);
     });
   }, []);
 
@@ -72,8 +73,16 @@ export const Organisations = () => {
     const res = orgs.filter((org) => {
       return org.opp_mbti[mbti as keyof MBTI] === checked;
     });
-    setFilteredOrgs(res);
+    setFilteredMBTIOrgs(res);
   };
+
+  const handleSearch = (search: string) => {
+    setSearch(search);
+    const res = orgs.filter((org) => {
+      return org.opp_name.toLowerCase().includes(search.toLowerCase());
+    });
+    setFilteredSearchOrgs(res);
+  }
 
   return (
     <ThemeWrapper darkTheme={theming.darkMode}>
@@ -83,6 +92,8 @@ export const Organisations = () => {
             label='Search'
             variant='outlined'
             className='sidebar-search'
+            onChange={(e) => handleSearch(e.target.value)}
+            value={search}
           />
           <MBTISelect
             props={selectProps(
@@ -110,7 +121,7 @@ export const Organisations = () => {
             Here are some organisations that you may be interested in!
           </Typography>
           <div className='organisations-list'>
-            {filteredOrgs.map((org, idx) => {
+            {filteredMBTIOrgs.filter(value => filteredSearchOrgs.includes(value)).map((org, idx) => {
               return <OrganisationCard {...org} key={idx} />;
             })}
           </div>
